@@ -1,5 +1,5 @@
 $?EXTRACFLAGS=
-OPT_CFLAGS:=-O1
+OPT_CFLAGS:=-O0 -g
 
 T04: check
 	@echo "-------- Sample 3d --------"
@@ -15,7 +15,7 @@ T04: check
 T04Debug: check
 	make T04 OPT_CFLAGS="-O0 -g"
 
-include ../Makefile.common
+include ../../Makefile.common
 
 clean:
 	rm -f *.swf *.bc *.abc

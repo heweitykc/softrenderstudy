@@ -31,7 +31,7 @@ package com.adobe.flascc
     public var bm:Bitmap;
 	private var _tf:TextField;
 
-    include "../TestingCode.as";
+    include "../../TestingCode.as";
 
     /**
     * To Support the preloader case you might want to have the Console
@@ -64,9 +64,11 @@ package com.adobe.flascc
       stage.frameRate = 60;
       stage.scaleMode = StageScaleMode.NO_SCALE;
       
-      bmd = new BitmapData(stage.stageWidth, stage.stageHeight, false)
+      bmd = new BitmapData(400, 300, false)
       bm = new Bitmap(bmd)
       inputContainer.addChild(bm)
+	  bm.x = 2;
+	  bm.y = 2;
 	  
 	  _tf = new TextField();
 	  inputContainer.addChild(_tf);
@@ -77,10 +79,10 @@ package com.adobe.flascc
 	  _tf.height = stage.stageHeight;
 	  _tf.x = stage.stageWidth - _tf.width;
 	  _tf.multiline = true
-	  _tf.text = "console staring...\n";
 	  
       CModule.startAsync(this)
       initTesting();
+	  trace("start...\n");
     }
 
     /**
@@ -149,7 +151,7 @@ package com.adobe.flascc
     * Helper function that traces to the flashlog text file and also
     * displays output in the on-screen textfield console.
     */
-    protected function consoleWrite(s:String):void
+    public function consoleWrite(s:String):void
     {
 		trace(s)
 		_tf.appendText(s)
@@ -162,7 +164,9 @@ package com.adobe.flascc
     */
     protected function enterFrame(e:Event):void
     {
-      CModule.serviceUIRequests()
+      CModule.serviceUIRequests();
+	  var args:Vector.<int> = new Vector.<int>;
+      CModule.callI(CModule.getPublicSymbol("loop"), args);
     }
   }
 }
