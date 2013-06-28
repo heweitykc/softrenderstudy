@@ -4,127 +4,31 @@
 #include <stdint.h>
 #include <string.h>
 #include "mathlib.h"
+#include "drawutils.h"
 
 using namespace std;
 
 //左手坐标系
 
-float cam_x=0,cam_y=0,cam_z=10;		//相机位置
-float ang_x=0,ang_y=PI,ang_z=0;		//观察角度
-char pbuff[1024];
+float cam_x=0,cam_y=0,cam_z=0;		//相机位置
+float ang_x=0,ang_y=0,ang_z=0;		//观察角度
 
-VECTOR3D cube_world[3]={
-	0.8,0.8,0,
-	-0.8,0.8,0,
-	0,-0.8,0
+VECTOR3D m_world[3];   //世界系坐标
+VECTOR3D m_camera[3];  //转换后的相机系坐标
+VECTOR3D m_proj[3];  //转换后的透视坐标
+
+int d = 10; //视距
+
+int COLORS[] = {0x0,0xFF0000,0x00FF00,0x0000FF,0xFFFF00,0x00FFFF,0xFFFFFF};
+
+VECTOR3D cube[3*8] = {
+	0.8,0,20,
+	-0.8,0,20,
+	0,0.8,20
 };
 
-VECTOR3D cube_camera[3];
-
-void p(char* str, int len)
-{
-    AS3_DeclareVar(myString, String);
-    AS3_CopyCStringToVar(myString, str, len);
-    AS3_Trace(myString);
-}
-
-float XX(float x)
-{
-	return (x+1)/2 * 400;	
-}
-float YY(float y)
-{
-	return (y+1)/2 * 300;	
-}
-
-void initAS3()
-{
-	inline_as3(
-	    "import com.adobe.flascc.CModule;\n"
-		"import flash.display.BitmapData;\n"
-        "import flash.display.Graphics;\n"
-        "import flash.display.Stage;\n"
-		"import flash.geom.Rectangle;\n"
-		: :
-	);
-}
-
-void AS3DrawP(float x,float y,int c)
-{
-	//memset(pbuff,0,1024);
-	//sprintf(pbuff,"x=%f,y=%f",x,y);
-	//p(pbuff,strlen(pbuff));
-	
-	inline_as3(
-		"CModule.activeConsole.bmd.setPixel32(%0, %1, %2);\n" 
-		"CModule.activeConsole.bmd.setPixel32(%0, %1+1, %2);\n" 
-		"CModule.activeConsole.bmd.setPixel32(%0+1, %1, %2);\n" 
-		"CModule.activeConsole.bmd.setPixel32(%0+1, %1+1, %2);\n" 
-		: :"r"(int(x)), "r"(int(y)), "r"(c)
-	);
-}
-
-void AS3DrawL(float x1,float y1,float x2,float y2,int c)
-{
-	memset(pbuff,0,1024);
-	sprintf(pbuff,"x1=%f,y1=%f,x2=%f,y2=%f",x1,y1,x2,y2);
-	p(pbuff,strlen(pbuff));
-	
-float k,dx,dy,x,y,xend,yend;
-dx = x2 - x1;
-dy = y2 - y1;
-if(fabs(dx) >= fabs(dy))
-{
-k = dy / dx;
-if(dx > 0)
-{
-x = x1;
-y = y1;
-xend = x2;
-}
-else
-{
-x = x2;
-y = y2;
-xend = x1;
-}
-while(x <= xend)
-{
-AS3DrawP(x, y, c);
-y = y + k;
-x = x + 1;
-}
-}
-else
-{
-k = dx / dy;
-if(dy > 0)
-{
-x = x1;
-y = y1;
-yend = y2;
-}
-else
-{
-x = x2;
-y = y2;
-yend = y1;
-}
-while(y <= yend)
-{
-AS3DrawP(x, y, c);
-x = x + k;
-y = y + 1;
-}
-}
-}
-
-void initcube(){
-
-}
-
 //3d转换
-void proj(){	
+void proj(int color){	
 	//平移矩阵,与相机原点重合
 	MATRIX4X4 Tcam_inv = {
 		1,0,0,0,
@@ -162,39 +66,58 @@ void proj(){
 	Mat_Mul_4X4(&Tcam_inv,&Rcamy_inv,&Mtemp1);
 	Mat_Mul_4X4(&Rcamx_inv,&Rcamz_inv,&Mtemp2);
 	
-	Mat_Mul_4X4(&m0,&Mtemp2,&Mtemp3);
+	//注意顺序
+	Mat_Mul_4X4(&Mtemp1,&Mtemp2,&Tcam);
 	
-	Mat_Mul_4X4(&Mtemp1,&Mtemp3,&Tcam);
-	
+	//世界坐标到相机坐标变化
 	for(int i = 0;i<3;i++){
-		Mat_Mul_VECTOR3D_4X4(&cube_world[i],&Tcam,&cube_camera[i]);
+		Mat_Mul_VECTOR3D_4X4(&m_world[i],&Tcam,&m_camera[i]);
+		
+		memset(pbuff,0,1024);
+		sprintf(pbuff,"(%f,%f,%f)",m_camera[i].x,m_camera[i].y,m_camera[i].z);
+		p(pbuff,strlen(pbuff));
+		
+		float z = m_world[i].z;
+		m_proj[i].x = d*m_camera[i].x/z;
+		m_proj[i].y = d*m_camera[i].y/z;
 	}
+	
 	for(int i = 0;i<3;i++){
 		if(i==2){
-			AS3DrawL(XX(cube_camera[i].x),YY(cube_camera[i].y),XX(cube_camera[0].x),YY(cube_camera[0].y),0);
+			AS3DrawL(m_proj[i],m_proj[0],color);
 		} else {
-			AS3DrawL(XX(cube_camera[i].x),YY(cube_camera[i].y),XX(cube_camera[i+1].x),YY(cube_camera[i+1].y),0);
+			AS3DrawL(m_proj[i],m_proj[i+1],color);
 		}
 	}
 }
 
+void fillTriangle(VECTOR3D& v3,float x,float y,float z)
+{
+	v3.x = x;
+	v3.y = y;
+	v3.z = z;
+}
+
 extern "C" void loop()
 {
-	//cam_y+=0.01;
-	
-	memset(pbuff,0,1024);
-	sprintf(pbuff,"ry=%f",ry);
-	p(pbuff,strlen(pbuff));
+	//cube[0].z+=1;
+	//cube[1].z+=1;
+	//cube[2].z+=1;
+	cam_z += 1;
 	inline_as3(
 		"import flash.geom.Rectangle;\n"
-		"CModule.activeConsole.bmd.fillRect(new Rectangle(0,0,400,300), 0xffffff);\n" 
+		"CModule.activeConsole.bmd.fillRect(new Rectangle(0,0,400,400), 0xffff00);\n" 
 		: :
 	);
-	proj();
+	for(int i=0;i<1;i++)
+	{
+		fillTriangle(m_world[0],cube[i].x,cube[i].y,cube[i].z);
+		fillTriangle(m_world[1],cube[i+1].x,cube[i+1].y,cube[i+1].z);
+		fillTriangle(m_world[2],cube[i+2].x,cube[i+2].y,cube[i+2].z);
+		proj(COLORS[i]);
+	}	
 }
 
 int main(){
-	initAS3();
-	initcube();
 	return 0;
 }

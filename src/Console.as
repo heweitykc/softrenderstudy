@@ -64,11 +64,11 @@ package com.adobe.flascc
       stage.frameRate = 60;
       stage.scaleMode = StageScaleMode.NO_SCALE;
       
-      bmd = new BitmapData(400, 300, false)
+      bmd = new BitmapData(400, 400, false)
       bm = new Bitmap(bmd)
       inputContainer.addChild(bm)
-	  bm.x = 2;
-	  bm.y = 2;
+	  bm.x = 50;
+	  bm.y = 50;
 	  
 	  _tf = new TextField();
 	  inputContainer.addChild(_tf);
