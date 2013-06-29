@@ -17,25 +17,11 @@ VECTOR3D m_world[3];   //世界系坐标
 VECTOR3D m_camera[3];  //转换后的相机系坐标
 VECTOR3D m_proj[3];  //转换后的透视坐标
 
-MATRIX4X4 m_rotationX = {		
-		1,0,0,0,
-		0,cos(-ang_x),sin(-ang_x),0,
-		0,-sin(-ang_x),cos(-ang_x),0,
-		0,0,0,1
-};
-
-MATRIX4X4 m_rotationZ = {		
-	cos(-ang_z),sin(-ang_z),0,0,
-	-sin(-ang_z),cos(-ang_z),0,0,
-	0,0,1,0,
-	0,0,0,1
-};
-
 float rotationX=0;
 float rotationY=0;
 float rotationZ=0;
 
-int d = 10; //视距
+int d = 10; //视距				
 
 int COLORS[] = {0x0,0xFF0000,0x00FF00,0x0000FF,0xFFFF00,0x00FFFF,0xFFFFFF};
 
@@ -43,6 +29,34 @@ VECTOR3D cube[3*8] = {
 	0.8,0,20,
 	-0.8,0,20,
 	0,0.8,20
+};
+
+VECTOR3D cube2[] = {
+	0,0,0+20,
+	1.0,0,0+20,
+	1.0,1.0,0+20,
+	0,1.0,0+20,
+	1.0,1.0,0+20,
+	0,0,1.0+20,
+	1.0,0,1.0+20,
+	1.0,1.0,1.0+20
+};
+
+
+MATRIX4X4 m_rotation = {		
+		1,0,0,0,
+		0,1,0,0,
+		0,0,1,0,
+		0,0,0,1
+};
+VECTOR3D rotation0 = {0.5,1,0.5+20};
+VECTOR3D rotation1 = {0.5,0,0.5+20};
+
+int cubeIndex[] = {
+	0,1,3,1,3,2,
+	2,1,6,2,6,7,
+	5,6,7,5,7,4,
+	0,5,3,5,3,4
 };
 
 //3d转换
@@ -90,25 +104,7 @@ void proj(int color){
 	
 	//世界坐标到相机坐标变化
 	for(int i = 0;i<3;i++){
-		MATRIX4X4 m;
-		MATRIX4X4 m2;
-		MATRIX4X4 m_move = {
-			1,0,0,0,
-			0,1,0,0,
-			0,0,1,0,
-			-m_world[i].x,-m_world[i].y,-m_world[i].z,1
-		};
-		MATRIX4X4 m_back = {
-			1,0,0,0,
-			0,1,0,0,
-			0,0,1,0,
-			m_world[i].x,m_world[i].y,m_world[i].z,1
-		};
-
-		Mat_Mul_4X4(&m_move,&m_rotationX,&m);
-		Mat_Mul_4X4(&m,&m_back,&m2);
-		Mat_Mul_VECTOR3D_4X4(&m_world[i],&m2,&m_camera[i]);//乘上绕Y轴的旋转矩阵
-		
+		Mat_Mul_VECTOR3D_4X4(&m_world[i],&m_rotation,&m_camera[i]);//乘上绕XYZ轴的旋转矩阵
 		Mat_Mul_VECTOR3D_4X4(&m_camera[i],&Tcam,&m_camera2);
 		
 		memset(pbuff,0,1024);
@@ -129,49 +125,44 @@ void proj(int color){
 	}
 }
 
-void fillTriangle(VECTOR3D& v3,float x,float y,float z)
+void fillTriangle(VECTOR3D& v3,VECTOR3D& p)
 {
-	v3.x = x;
-	v3.y = y;
-	v3.z = z;
+	v3.x = p.x;
+	v3.y = p.y;
+	v3.z = p.z;
 }
 
 extern "C" void loop()
 {
 	rotationZ += (1.0/180.0*PI);
-	m_rotationZ.M00 = cos(-rotationZ);
-	m_rotationZ.M01 = sin(-rotationZ);
-	m_rotationZ.M10 = -sin(-rotationZ);
-	m_rotationZ.M11 = cos(-rotationZ);
-	
-	rotationX += (1.0/180.0*PI);
-	m_rotationX.M11 = cos(-rotationX);
-	m_rotationX.M12 = sin(-rotationX);
-	m_rotationX.M21 = -sin(-rotationX);
-	m_rotationX.M22 = cos(-rotationX);
 		
-	
-	//cam_z += 0.1;
-	//ang_y += 0.01;
-	
-	//memset(pbuff,0,1024);
-	//sprintf(pbuff,"rotationY = %f, (m00=%f,m02=%f,m20=%f,m22=%f)",rotationY,m_rotation.M00,m_rotation.M02,m_rotation.M20,m_rotation.M22);
-	//p(pbuff,strlen(pbuff));
+	RotateArbitraryLine(&m_rotation,&rotation0,&rotation1,rotationZ);
 	
 	inline_as3(
 		"import flash.geom.Rectangle;\n"
 		"CModule.activeConsole.bmd.fillRect(new Rectangle(0,0,400,400), 0xffff00);\n" 
 		: :
 	);
-	for(int i=0;i<1;i++)
+	for(int i=0;i<8;i++)
 	{
-		fillTriangle(m_world[0],cube[i].x,cube[i].y,cube[i].z);
-		fillTriangle(m_world[1],cube[i+1].x,cube[i+1].y,cube[i+1].z);
-		fillTriangle(m_world[2],cube[i+2].x,cube[i+2].y,cube[i+2].z);
+		VECTOR3D p0,p1,p2;
+		p0 = cube2[cubeIndex[i]];
+		p1 = cube2[cubeIndex[i+1]];
+		p2 = cube2[cubeIndex[i+2]];
+		
+		//memset(pbuff,0,1024);
+		//sprintf(pbuff,"",rotationY,m_rotation.M00,m_rotation.M02,m_rotation.M20,m_rotation.M22);
+		//p(pbuff,strlen(pbuff));
+		
+		fillTriangle(m_world[0],p0);
+		fillTriangle(m_world[1],p1);
+		fillTriangle(m_world[2],p2);
+		
 		proj(COLORS[i]);
 	}	
 }
 
 int main(){
+	printf("starting...");
 	return 0;
 }
