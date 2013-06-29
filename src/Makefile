@@ -1,5 +1,6 @@
 $?EXTRACFLAGS=
 OPT_CFLAGS:=-O0 -g
+#OPT_CFLAGS:=-O4
 
 T04: check
 	@echo "-------- Sample 3d --------"

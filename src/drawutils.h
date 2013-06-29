@@ -16,6 +16,13 @@ void p(char* str, int len)
     AS3_Trace(myString);
 }
 
+void fillTriangle(VECTOR3D& v3,VECTOR3D& p)
+{
+	v3.x = p.x;
+	v3.y = p.y;
+	v3.z = p.z;
+}
+
 //画点
 void AS3DrawP(float x,float y,int c)
 {
@@ -37,9 +44,9 @@ void AS3DrawL(VECTOR3D& v1,VECTOR3D& v2,int c)
 {
 	float x1, y1, x2, y2;
 
-	memset(pbuff,0,1024);
-	sprintf(pbuff,"(%f,%f,%f) - (%f,%f,%f)",v1.x,v1.y,v1.z,v2.x,v2.y,v2.z);
-	p(pbuff,strlen(pbuff));
+	//memset(pbuff,0,1024);
+	//sprintf(pbuff,"(%f,%f,%f) - (%f,%f,%f)",v1.x,v1.y,v1.z,v2.x,v2.y,v2.z);
+	//p(pbuff,strlen(pbuff));
 		
 	x1 = XX(v1);
 	y1 = YY(v1);
