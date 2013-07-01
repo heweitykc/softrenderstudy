@@ -11,7 +11,7 @@ T04: check
 		-import $(call nativepath,$(FLASCC)/usr/lib/playerglobal.abc) \
 		Console.as -outdir . -out Console
 
-	"$(FLASCC)/usr/bin/g++" $(BASE_CFLAGS) $(OPT_CFLAGS) draw.c mathlib.c -symbol-abc=Console.abc -emit-swf -swf-version=17 -swf-size=800x600 -o draw.swf $(EXTRACFLAGS)
+	"$(FLASCC)/usr/bin/g++" $(BASE_CFLAGS) $(OPT_CFLAGS) main.c mathlib.c -symbol-abc=Console.abc -emit-swf -swf-version=17 -swf-size=800x600 -o main.swf $(EXTRACFLAGS)
 
 T04Debug: check
 	make T04 OPT_CFLAGS="-O0 -g"
