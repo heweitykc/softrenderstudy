@@ -10,7 +10,7 @@ using namespace std;
 
 //左手坐标系
 
-float cam_x=0,cam_y=0,cam_z=0;		//相机位置
+float cam_x=0,cam_y=0,cam_z=-20;		//相机位置
 float ang_x=0,ang_y=0,ang_z=0;		//观察角度
 
 VECTOR3D m_world[3];   //世界系坐标
@@ -104,19 +104,19 @@ void translate()
 
 //3d转换
 void proj(int color){
-	VECTOR3D m_camera2;
+	VECTOR3D v_camera2;
 	//世界坐标到相机坐标变化
 	for(int i = 0;i<3;i++){
 		Mat_Mul_VECTOR3D_4X4(&m_world[i],&m_rotation,&m_camera[i]);//乘上绕XYZ轴的旋转矩阵
-		Mat_Mul_VECTOR3D_4X4(&m_camera[i],&Tcam,&m_camera2);
+		Mat_Mul_VECTOR3D_4X4(&m_camera[i],&Tcam,&v_camera2);
 		
 		//memset(pbuff,0,1024);
-		//sprintf(pbuff,"(%f,%f,%f)",m_camera2.x,m_camera2.y,m_camera2.z);
+		//sprintf(pbuff,"(%f,%f,%f)",v_camera2.x,v_camera2.y,v_camera2.z);
 		//p(pbuff,strlen(pbuff));
 		
-		float z = m_world[i].z;
-		m_proj[i].x = d*m_camera2.x/z;
-		m_proj[i].y = d*m_camera2.y/z;
+		float z = v_camera2.z;
+		m_proj[i].x = d*v_camera2.x/z;
+		m_proj[i].y = d*v_camera2.y/z;
 	}
 	
 	for(int i = 0;i<3;i++){
@@ -128,8 +128,27 @@ void proj(int color){
 	}
 }
 
-extern "C" void loop()
+//args: up,down,left,right
+extern "C" void loop(int args[])
 {
+		
+	memset(pbuff,0,1024);
+	sprintf(pbuff,"%d,%d,%d,%d,",args[0],args[1],args[2],args[3]);
+	p(pbuff,strlen(pbuff));
+		
+	if(args[0] == 1){
+		cam_z += 1;
+	}
+	if(args[1] == 1){
+		cam_z -= 1;
+	}
+	if(args[2] == 1){
+		cam_x -= 1;
+	}
+	if(args[3] == 1){
+		cam_x += 1;
+	}
+	
 	rotationZ += (1.0/180.0*PI);
 	
 	MATRIX4X4 tmp0,tmp1;
@@ -150,10 +169,6 @@ extern "C" void loop()
 		p0 = cube2[cubeIndex[i]];
 		p1 = cube2[cubeIndex[i+1]];
 		p2 = cube2[cubeIndex[i+2]];
-		
-		//memset(pbuff,0,1024);
-		//sprintf(pbuff,"",rotationY,m_rotation.M00,m_rotation.M02,m_rotation.M20,m_rotation.M22);
-		//p(pbuff,strlen(pbuff));
 		
 		fillTriangle(m_world[0],p0);
 		fillTriangle(m_world[1],p1);

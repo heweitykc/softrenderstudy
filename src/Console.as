@@ -15,6 +15,8 @@ package com.adobe.flascc
   import flash.net.LocalConnection;
   import flash.net.URLRequest;
   import flash.text.*;
+  import flash.ui.*;
+  import flash.events.*;
   import flash.utils.ByteArray;
   import com.adobe.flascc.vfs.ISpecialFile;
 
@@ -30,9 +32,12 @@ package com.adobe.flascc
     public var bmd:BitmapData;
     public var bm:Bitmap;
 	private var _tf:TextField;
-
-    include "../../TestingCode.as";
-
+	
+	private var inUp:int=0;
+	private var inDown:int=0;
+	private var inLeft:int=0;
+	private var inRight:int=0;
+	
     /**
     * To Support the preloader case you might want to have the Console
     * act as a child of some other DisplayObjectContainer.
@@ -56,13 +61,13 @@ package com.adobe.flascc
     */
     protected function init(e:Event):void
     {
+      stage.frameRate = 60;
+      stage.scaleMode = StageScaleMode.NO_SCALE;
+	  
       inputContainer = new Sprite()
       addChild(inputContainer)
 
       addEventListener(Event.ENTER_FRAME, enterFrame)
-
-      stage.frameRate = 60;
-      stage.scaleMode = StageScaleMode.NO_SCALE;
       
       bmd = new BitmapData(400, 400, false)
       bm = new Bitmap(bmd)
@@ -80,10 +85,55 @@ package com.adobe.flascc
 	  _tf.x = stage.stageWidth - _tf.width;
 	  _tf.multiline = true
 	  
-      CModule.startAsync(this)
-      initTesting();
-	  trace("start...\n");
+	  initKeyborad();
+	  
+      CModule.startAsync(this)      
     }
+	
+	private function initKeyborad():void
+	{
+		stage.addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
+		stage.addEventListener(KeyboardEvent.KEY_UP,onKeyUp);
+		stage.focus = this;
+	}
+	
+	private function onKeyDown(evt:KeyboardEvent):void
+	{
+		switch(evt.keyCode)
+		{
+			case Keyboard.A:
+				inLeft=1;
+				break;
+			case Keyboard.D:
+				inRight=1;
+				break;
+			case Keyboard.W:
+				inUp=1;
+				break;
+			case Keyboard.S:
+				inDown=1;
+				break;
+		}
+	}
+	
+	private function onKeyUp(evt:KeyboardEvent):void
+	{
+		switch(evt.keyCode)
+		{
+			case Keyboard.A:
+				inLeft=0;
+				break;
+			case Keyboard.D:
+				inRight=0;
+				break;
+			case Keyboard.W:
+				inUp=0;
+				break;
+			case Keyboard.S:
+				inDown=0;
+				break;
+		}
+	}
 
     /**
     * The callback to call when FlasCC code calls the posix exit() function. Leave null to exit silently.
@@ -165,7 +215,7 @@ package com.adobe.flascc
     protected function enterFrame(e:Event):void
     {
       CModule.serviceUIRequests();
-	  var args:Vector.<int> = new Vector.<int>;
+	  var args:Vector.<int> = new Vector.<int>([inUp,inDown,inLeft,inRight]);
       CModule.callI(CModule.getPublicSymbol("loop"), args);
     }
   }
