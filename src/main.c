@@ -131,38 +131,43 @@ void proj(int color){
 //args: up,down,left,right
 extern "C" void loop(int args[])
 {
-		
-	memset(pbuff,0,1024);
-	sprintf(pbuff,"%d,%d,%d,%d,",args[0],args[1],args[2],args[3]);
-	p(pbuff,strlen(pbuff));
-		
-	if(args[0] == 1){
-		cam_z += 1;
-	}
-	if(args[1] == 1){
-		cam_z -= 1;
-	}
-	if(args[2] == 1){
-		cam_x -= 1;
-	}
-	if(args[3] == 1){
-		cam_x += 1;
-	}
+	int inup,indown,inleft,inright;
+	inline_as3("var num:Number;");
+	inline_as3("num = CModule.activeConsole.inUp;");
+    AS3_GetScalarFromVar(inup, num);
+	inline_as3("num = CModule.activeConsole.inDown;");
+    AS3_GetScalarFromVar(indown, num);
+	inline_as3("num = CModule.activeConsole.inLeft;");
+    AS3_GetScalarFromVar(inleft, num);
+	inline_as3("num = CModule.activeConsole.inRight;");
+    AS3_GetScalarFromVar(inright, num);
 	
-	rotationZ += (1.0/180.0*PI);
-	
-	MATRIX4X4 tmp0,tmp1;
-	//RotateArbitraryLine(&tmp0,&rotation0,&rotation1,rotationZ);
-	RotateArbitraryLine(&m_rotation,&rotation2,&rotation3,rotationZ);
-	//Mat_Mul_4X4(&m_rotation,&tmp0,&tmp1);
+	//memset(pbuff,0,1024);
+	//sprintf(pbuff,"%d,%d,%d,%d,",args[0],args[1],args[2],args[3]);
+	//p(pbuff,strlen(pbuff));
 	
 	inline_as3(
 		"import flash.geom.Rectangle;\n"
 		"CModule.activeConsole.bmd.fillRect(new Rectangle(0,0,400,400), 0xffff00);\n" 
 		: :
 	);
-	int len = sizeof(cubeIndex) / sizeof(cubeIndex[0]);
-
+	
+	if(inup == 1){
+		cam_z += 0.1;
+	}
+	if(indown == 1){
+		cam_z -= 0.1;
+	}
+	if(inleft == 1){
+		cam_x -= 0.1;
+	}
+	if(inright == 1){
+		cam_x += 0.1;
+	}
+	rotationZ += (1.0/180.0*PI);
+	RotateArbitraryLine(&m_rotation,&rotation2,&rotation3,rotationZ);
+	translate();
+	int len = sizeof(cubeIndex) / sizeof(cubeIndex[0]);	
 	for(int i=0;i<len;i+=3)
 	{
 		VECTOR3D p0,p1,p2;
@@ -180,6 +185,5 @@ extern "C" void loop(int args[])
 
 int main(){
 	printf("starting...");
-	translate();
 	return 0;
 }

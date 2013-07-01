@@ -33,10 +33,10 @@ package com.adobe.flascc
     public var bm:Bitmap;
 	private var _tf:TextField;
 	
-	private var inUp:int=0;
-	private var inDown:int=0;
-	private var inLeft:int=0;
-	private var inRight:int=0;
+	public var inUp:int=0;
+	public var inDown:int=0;
+	public var inLeft:int=0;
+	public var inRight:int=0;
 	
     /**
     * To Support the preloader case you might want to have the Console
@@ -83,8 +83,8 @@ package com.adobe.flascc
 	  _tf.width = 200;
 	  _tf.height = stage.stageHeight;
 	  _tf.x = stage.stageWidth - _tf.width;
-	  _tf.multiline = true
-	  
+	  _tf.multiline = true;
+	  _tf.appendText("starting...");
 	  initKeyborad();
 	  
       CModule.startAsync(this)      
@@ -94,11 +94,11 @@ package com.adobe.flascc
 	{
 		stage.addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
 		stage.addEventListener(KeyboardEvent.KEY_UP,onKeyUp);
-		stage.focus = this;
 	}
 	
 	private function onKeyDown(evt:KeyboardEvent):void
 	{
+		_tf.appendText("evt.keyCode="+evt.keyCode+"\n");
 		switch(evt.keyCode)
 		{
 			case Keyboard.A:
