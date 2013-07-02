@@ -5,8 +5,8 @@ typedef struct POLY4DV1_TYP
 	int attr;
 	int color;
 	
-	POINT4D_PTR vlist;
-	int vert[3];
+	POINT4D_PTR vlist;	//顶点列表
+	int vert[3];		//索引
 } POLY4DV1, *POLY4DV1_PTR;
 
 typedef struct POLYF4DV1_TYP
