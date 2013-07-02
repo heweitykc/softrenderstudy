@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "mathlib.h"
+#include "drawdef.h"
 #include "drawutils.h"
 
 using namespace std;
