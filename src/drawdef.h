@@ -1,10 +1,4 @@
-﻿typedef struct POLY_EX_TYP_2
-{
-	POINT3D_PTR vlist;	//顶点列表
-	int vertices[3];	//指向定点列表的索引
-} POLY_EX_2, *POLY_EX_2_PTR;
-
-typedef struct POLY4DV1_TYP
+﻿typedef struct POLY4DV1_TYP
 {
 	int state;	//状态信息
 	int attr;	//物理属性
