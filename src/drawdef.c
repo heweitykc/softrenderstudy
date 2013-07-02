@@ -1,4 +1,7 @@
-﻿void initCube(OBJECT4DV1 *cube1)
+﻿#include "mathlib.h"
+#include "drawdef.h"
+
+void initCube(OBJECT4DV1 *cube1)
 {
 	cube1->id = 0;
 	cube1->state = 0;
@@ -46,14 +49,14 @@
 	
 	for(int tri=0;tri<12;tri++)
 	{
-		cube1.plist[tri].state = 0;
-		cube1.plist[tri].attr = 0;
-		cube1.plist[tri].color = 0;
+		cube1->plist[tri].state = 0;
+		cube1->plist[tri].attr = 0;
+		cube1->plist[tri].color = 0;
 		
-		cube1.plist[tri].vlist = cube1.vlist_local;
+		//cube1.plist[tri].vlist = cube1.vlist_local;
 		
-		cube1.plist[tri].vert[0] = temp_poly_indices[tri*3+0];
-		cube1.plist[tri].vert[1] = temp_poly_indices[tri*3+1];
-		cube1.plist[tri].vert[2] = temp_poly_indices[tri*3+2];
+		cube1->plist[tri].vert[0] = temp_poly_indices[tri*3+0];
+		cube1->plist[tri].vert[1] = temp_poly_indices[tri*3+1];
+		cube1->plist[tri].vert[2] = temp_poly_indices[tri*3+2];
 	}
 }

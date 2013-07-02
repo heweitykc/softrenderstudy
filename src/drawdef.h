@@ -1,4 +1,15 @@
-﻿typedef struct POLY4DV1_TYP
+﻿
+typedef struct POLY4DV1_TYP
+{
+	int state;
+	int attr;
+	int color;
+	
+	POINT4D_PTR vlist;
+	int vert[3];
+} POLY4DV1, *POLY4DV1_PTR;
+
+typedef struct POLYF4DV1_TYP
 {
 	int state;	//状态信息
 	int attr;	//物理属性
@@ -8,7 +19,7 @@
 	POINT4D tvlist[3];		//变换后的顶点
 	POLYF4DV1_TYP *next;	//指向列表中下一个多边形的指针
 	POLYF4DV1_TYP *prev;	//指向列表中前一个多边形的指针
-} POLY4DV1, *POLY4DV1_PTR;
+} POLYF4DV1, *POLYF4DV1_PTR;
 
 typedef struct OBJECT4DV1_TYP
 {
