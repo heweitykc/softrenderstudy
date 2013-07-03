@@ -1,5 +1,4 @@
-﻿
-typedef struct POLY4DV1_TYP
+﻿typedef struct POLY4DV1_TYP
 {
 	int state;
 	int attr;

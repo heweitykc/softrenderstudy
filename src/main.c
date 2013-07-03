@@ -6,8 +6,10 @@
 #include "mathlib.h"
 #include "drawdef.h"
 #include "drawutils.h"
+#include "xml/tinyxml2.h"
 
 using namespace std;
+using namespace tinyxml2;
 
 //左手坐标系
 
@@ -25,6 +27,8 @@ float rotationZ=0;
 int d = 10; //视距				
 
 int COLORS[] = {0x0,0xFF0000,0x00FF00,0x0000FF,0xFFFF00,0x00FFFF,0xFFFFFF};
+
+XMLDocument doc;
 
 VECTOR3D cube2[] = {
 	0,0,0+20,		//0
@@ -129,6 +133,19 @@ void proj(int color){
 	}
 }
 
+void loadmodel()
+{
+	doc.LoadFile("/res/1.dae");
+	tinyxml2::XMLElement *element = doc.RootElement()->FirstChildElement();
+	while(element){
+		const char* title = element->GetText();
+		memset(pbuff,0,1024);
+		sprintf(pbuff,"title=%s",title);
+		p(pbuff,strlen(pbuff));
+		element = element->NextSiblingElement();
+	}
+}
+
 //args: up,down,left,right
 extern "C" void loop(int args[])
 {
@@ -142,10 +159,6 @@ extern "C" void loop(int args[])
     AS3_GetScalarFromVar(inleft, num);
 	inline_as3("num = CModule.activeConsole.inRight;");
     AS3_GetScalarFromVar(inright, num);
-	
-	//memset(pbuff,0,1024);
-	//sprintf(pbuff,"%d,%d,%d,%d,",args[0],args[1],args[2],args[3]);
-	//p(pbuff,strlen(pbuff));
 	
 	inline_as3(
 		"import flash.geom.Rectangle;\n"
@@ -165,26 +178,22 @@ extern "C" void loop(int args[])
 	if(inright == 1){
 		cam_x += 0.1;
 	}
+	
 	rotationZ += (1.0/180.0*PI);
 	RotateArbitraryLine(&m_rotation,&rotation2,&rotation3,rotationZ);
 	translate();
 	int len = sizeof(cubeIndex) / sizeof(cubeIndex[0]);	
 	for(int i=0;i<len;i+=3)
-	{
-		VECTOR3D p0,p1,p2;
-		p0 = cube2[cubeIndex[i]];
-		p1 = cube2[cubeIndex[i+1]];
-		p2 = cube2[cubeIndex[i+2]];
-		
-		fillTriangle(m_world[0],p0);
-		fillTriangle(m_world[1],p1);
-		fillTriangle(m_world[2],p2);
-		
+	{	
+		fillTriangle(m_world[0],cube2[cubeIndex[i]]);
+		fillTriangle(m_world[1],cube2[cubeIndex[i+1]]);
+		fillTriangle(m_world[2],cube2[cubeIndex[i+2]]);
 		proj(0);
 	}	
 }
 
 int main(){
 	printf("starting...");
+	loadmodel();
 	return 0;
 }

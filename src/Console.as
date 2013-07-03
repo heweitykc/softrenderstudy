@@ -18,8 +18,10 @@ package com.adobe.flascc
   import flash.ui.*;
   import flash.events.*;
   import flash.utils.ByteArray;
+  
   import com.adobe.flascc.vfs.ISpecialFile;
-
+  import com.adobe.flascc.vfs.HTTPBackingStore;
+  
   /**
   * A basic implementation of a console for FlasCC apps.
   * The PlayerKernel class delegates to this for things like read/write
@@ -38,6 +40,8 @@ package com.adobe.flascc
 	public var inLeft:int=0;
 	public var inRight:int=0;
 	
+	private var webfs:HTTPBackingStore = null
+		
     /**
     * To Support the preloader case you might want to have the Console
     * act as a child of some other DisplayObjectContainer.
@@ -86,8 +90,21 @@ package com.adobe.flascc
 	  _tf.multiline = true;
 	  _tf.appendText("starting...");
 	  initKeyborad();
-	  
-      CModule.startAsync(this)      
+	  initFileSystem();     
+    }
+	
+	private function initFileSystem():void
+	{
+		CModule.vfs.console = this;
+		
+		webfs = new HTTPBackingStore();
+		webfs.addEventListener(Event.COMPLETE, onComplete);
+    }
+
+    private function onComplete(e:Event):void {
+      CModule.vfs.addDirectory("/res")
+      CModule.vfs.addBackingStore(webfs, "/res")
+      CModule.startAsync(this)
     }
 	
 	private function initKeyborad():void
