@@ -132,6 +132,7 @@ void proj(int color){
 	}
 }
 
+//读取dae文件
 void loadmodel()
 {
 	doc.LoadFile("1.dae");
