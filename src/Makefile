@@ -41,4 +41,4 @@ tinyxml2.o : xml/tinyxml2.cpp
 include ../../Makefile.common
 
 clean:
-	rm -f *.swf *.bc *.abc *.o LSOBackingStore.as testresRootFSBackingStore.as
+	rm -f *.swf *.bc *.abc *.o LSOBackingStore.as testresRootFSBackingStore.as *.exe
