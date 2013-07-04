@@ -5,7 +5,6 @@ XMLOBJ:= tinyxml2.o
 
 main: $(XMLOBJ)
 	"$(FLASCC)/usr/bin/genfs" res testres
-	cp "$(FLASCC)/usr/share/HTTPBackingStore.as" .
 	cp "$(FLASCC)/usr/share/LSOBackingStore.as" .
 	
 	$(AS3COMPILERARGS)	-import $(call nativepath,$(FLASCC)/usr/lib/builtin.abc) \
@@ -16,7 +15,7 @@ main: $(XMLOBJ)
 			-import $(call nativepath,$(FLASCC)/usr/lib/IVFS.abc) \
 			-import $(call nativepath,$(FLASCC)/usr/lib/InMemoryBackingStore.abc) \
 			-import $(call nativepath,$(FLASCC)/usr/lib/PlayerKernel.abc) \
-			HTTPBackingStore.as LSOBackingStore.as testresRootFSBackingStore.as -outdir . -out VFS
+			testresRootFSBackingStore.as -outdir . -out VFS
 				
 	$(AS3COMPILERARGS) -strict -AS3 \
 		-import $(call nativepath,$(FLASCC)/usr/lib/builtin.abc) \
@@ -39,4 +38,4 @@ tinyxml2.o : xml/tinyxml2.cpp
 include ../../Makefile.common
 
 clean:
-	rm -f *.swf *.bc *.abc
+	rm -f *.swf *.bc *.abc *.o LSOBackingStore.as testresRootFSBackingStore.as

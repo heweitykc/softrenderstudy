@@ -20,9 +20,7 @@ package com.adobe.flascc
   import flash.utils.ByteArray;
   
   import com.adobe.flascc.vfs.ISpecialFile;
-  import com.adobe.flascc.vfs.HTTPBackingStore;
-  import com.adobe.flascc.vfs.RootFSBackingStore;
-  import com.adobe.flascc.vfs.LSOBackingStore;
+  import com.adobe.flascc.vfs.RootFSBackingStore;  
   
   /**
   * A basic implementation of a console for FlasCC apps.
