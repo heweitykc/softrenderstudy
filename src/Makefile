@@ -4,9 +4,9 @@ OPT_CFLAGS:=-O0 -g
 XMLOBJ:= tinyxml2.o
 
 main: $(XMLOBJ)
+	"$(FLASCC)/usr/bin/genfs" res testres
 	cp "$(FLASCC)/usr/share/HTTPBackingStore.as" .
-	"$(FLASCC)/usr/bin/genfs" --type=http res testres
-	mv testres_manifest.as manifest.as
+	cp "$(FLASCC)/usr/share/LSOBackingStore.as" .
 	
 	$(AS3COMPILERARGS)	-import $(call nativepath,$(FLASCC)/usr/lib/builtin.abc) \
 			-import $(call nativepath,$(FLASCC)/usr/lib/playerglobal.abc) \
@@ -16,7 +16,7 @@ main: $(XMLOBJ)
 			-import $(call nativepath,$(FLASCC)/usr/lib/IVFS.abc) \
 			-import $(call nativepath,$(FLASCC)/usr/lib/InMemoryBackingStore.abc) \
 			-import $(call nativepath,$(FLASCC)/usr/lib/PlayerKernel.abc) \
-			HTTPBackingStore.as -outdir . -out VFS
+			HTTPBackingStore.as LSOBackingStore.as testresRootFSBackingStore.as -outdir . -out VFS
 				
 	$(AS3COMPILERARGS) -strict -AS3 \
 		-import $(call nativepath,$(FLASCC)/usr/lib/builtin.abc) \
@@ -31,7 +31,7 @@ main: $(XMLOBJ)
 		-import VFS.abc \
 		Console.as -outdir . -out Console
 
-	"$(FLASCC)/usr/bin/g++" $(BASE_CFLAGS) $(OPT_CFLAGS) main.c mathlib.c drawdef.c $(XMLOBJ) VFS.abc -symbol-abc=Console.abc -emit-swf -swf-version=17 -swf-size=800x600 -o main.swf $(EXTRACFLAGS)
+	"$(FLASCC)/usr/bin/g++" $(BASE_CFLAGS) $(OPT_CFLAGS) main.c mathlib.c drawdef.c $(XMLOBJ)  VFS.abc $(FLASCC)/usr/lib/AlcVFSZip.abc -symbol-abc=Console.abc -emit-swf -swf-version=17 -swf-size=800x600 -o main.swf $(EXTRACFLAGS)
 
 tinyxml2.o : xml/tinyxml2.cpp
 	"$(FLASCC)/usr/bin/g++" $(BASE_CFLAGS) $(OPT_CFLAGS) -c xml/tinyxml2.cpp

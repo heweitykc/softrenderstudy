@@ -21,6 +21,8 @@ package com.adobe.flascc
   
   import com.adobe.flascc.vfs.ISpecialFile;
   import com.adobe.flascc.vfs.HTTPBackingStore;
+  import com.adobe.flascc.vfs.RootFSBackingStore;
+  import com.adobe.flascc.vfs.LSOBackingStore;
   
   /**
   * A basic implementation of a console for FlasCC apps.
@@ -39,8 +41,6 @@ package com.adobe.flascc
 	public var inDown:int=0;
 	public var inLeft:int=0;
 	public var inRight:int=0;
-	
-	private var webfs:HTTPBackingStore = null
 		
     /**
     * To Support the preloader case you might want to have the Console
@@ -90,21 +90,14 @@ package com.adobe.flascc
 	  _tf.multiline = true;
 	  _tf.appendText("starting...");
 	  initKeyborad();
-	  initFileSystem();     
+	  initFileSystem();
+	  CModule.startAsync(this)
     }
 	
 	private function initFileSystem():void
 	{
 		CModule.vfs.console = this;
-		
-		webfs = new HTTPBackingStore();
-		webfs.addEventListener(Event.COMPLETE, onComplete);
-    }
-
-    private function onComplete(e:Event):void {
-      CModule.vfs.addDirectory("/res")
-      CModule.vfs.addBackingStore(webfs, "/res")
-      CModule.startAsync(this)
+		CModule.vfs.addBackingStore(new RootFSBackingStore(), null)
     }
 	
 	private function initKeyborad():void

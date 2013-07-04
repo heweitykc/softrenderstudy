@@ -8,7 +8,6 @@
 #include "drawutils.h"
 #include "xml/tinyxml2.h"
 
-using namespace std;
 using namespace tinyxml2;
 
 //左手坐标系
@@ -135,15 +134,19 @@ void proj(int color){
 
 void loadmodel()
 {
-	doc.LoadFile("/res/1.dae");
-	tinyxml2::XMLElement *element = doc.RootElement()->FirstChildElement();
-	while(element){
+	doc.LoadFile("1.dae");
+	tinyxml2::XMLElement *element = doc.FirstChildElement("asset");
+	/*while(element){
 		const char* title = element->GetText();
 		memset(pbuff,0,1024);
 		sprintf(pbuff,"title=%s",title);
 		p(pbuff,strlen(pbuff));
 		element = element->NextSiblingElement();
 	}
+	*/
+	memset(pbuff,0,1024);
+	sprintf(pbuff,"title=%s",element->GetText());
+	p(pbuff,strlen(pbuff));
 }
 
 //args: up,down,left,right
