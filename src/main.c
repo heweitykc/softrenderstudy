@@ -136,17 +136,13 @@ void loadmodel()
 {
 	doc.LoadFile("1.dae");
 	tinyxml2::XMLElement *element = doc.FirstChildElement("asset");
-	/*while(element){
-		const char* title = element->GetText();
+	tinyxml2::XMLElement *element = doc.FirstChildElement("COLLADA")->FirstChildElement("library_geometries")->FirstChildElement("geometry");
+	while(element){
 		memset(pbuff,0,1024);
-		sprintf(pbuff,"title=%s",title);
+		sprintf(pbuff,"title=%s",element->Attribute("id"));
 		p(pbuff,strlen(pbuff));
-		element = element->NextSiblingElement();
+		element = element->NextSiblingElement("geometry");
 	}
-	*/
-	memset(pbuff,0,1024);
-	sprintf(pbuff,"title=%s",element->GetText());
-	p(pbuff,strlen(pbuff));
 }
 
 //args: up,down,left,right

@@ -3,6 +3,9 @@ OPT_CFLAGS:=-O0 -g
 #OPT_CFLAGS:=-O4
 XMLOBJ:= tinyxml2.o
 
+exe:
+	"$(FLASCC)/usr/bin/g++" $(BASE_CFLAGS) $(OPT_CFLAGS) $(XMLOBJ) tinyxmltest.c -o testxml.exe
+
 main: $(XMLOBJ)
 	"$(FLASCC)/usr/bin/genfs" res testres
 	cp "$(FLASCC)/usr/share/LSOBackingStore.as" .
