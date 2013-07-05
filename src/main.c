@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include "xml/tinyxml2.h"
 #include "mathlib.h"
 #include "drawdef.h"
 #include "drawutils.h"
-#include "xml/tinyxml2.h"
 
 using namespace tinyxml2;
 
@@ -48,6 +48,8 @@ int cubeIndex[] = {
 	3,2,4,2,4,7,
 	0,1,5,1,5,6
 };
+
+OBJECT4DV1 obj;
 
 MATRIX4X4 m_rotation = {		
 		1,0,0,0,
@@ -136,13 +138,7 @@ void proj(int color){
 void loadmodel()
 {
 	doc.LoadFile("1.dae");
-	tinyxml2::XMLElement *element = doc.FirstChildElement("COLLADA")->FirstChildElement("library_geometries")->FirstChildElement("geometry");
-	while(element){
-		memset(pbuff,0,1024);
-		sprintf(pbuff,"title=%s",element->Attribute("id"));
-		p(pbuff,strlen(pbuff));
-		element = element->NextSiblingElement("geometry");
-	}
+	initObjWithDae(&obj,&doc);
 }
 
 //args: up,down,left,right
@@ -181,7 +177,7 @@ extern "C" void loop(int args[])
 	rotationZ += (1.0/180.0*PI);
 	RotateArbitraryLine(&m_rotation,&rotation2,&rotation3,rotationZ);
 	translate();
-	int len = sizeof(cubeIndex) / sizeof(cubeIndex[0]);	
+	int len = sizeof(cubeIndex) / sizeof(cubeIndex[0]);
 	for(int i=0;i<len;i+=3)
 	{	
 		fillTriangle(m_world[0],cube2[cubeIndex[i]]);

@@ -1,4 +1,7 @@
-﻿typedef struct POLY4DV1_TYP
+﻿#include "xml/tinyxml2.h"
+using namespace tinyxml2;
+
+typedef struct POLY4DV1_TYP
 {
 	int state;
 	int attr;
@@ -45,5 +48,4 @@ typedef struct OBJECT4DV1_TYP
 } OBJECT4DV1, *OBJECT4DV1_PTR;
 
 void initCube(OBJECT4DV1 *cube1);	//初始化一个cube
-
-
+void initObjWithDae(OBJECT4DV1 *obj1, XMLDocument *doc);
