@@ -136,7 +136,6 @@ void proj(int color){
 void loadmodel()
 {
 	doc.LoadFile("1.dae");
-	tinyxml2::XMLElement *element = doc.FirstChildElement("asset");
 	tinyxml2::XMLElement *element = doc.FirstChildElement("COLLADA")->FirstChildElement("library_geometries")->FirstChildElement("geometry");
 	while(element){
 		memset(pbuff,0,1024);

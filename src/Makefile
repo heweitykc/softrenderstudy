@@ -3,9 +3,6 @@ OPT_CFLAGS:=-O0 -g
 #OPT_CFLAGS:=-O4
 XMLOBJ:= tinyxml2.o
 
-exe:
-	"$(FLASCC)/usr/bin/g++" $(BASE_CFLAGS) $(OPT_CFLAGS) $(XMLOBJ) tinyxmltest.c -o testxml.exe
-
 main: $(XMLOBJ)
 	"$(FLASCC)/usr/bin/genfs" res testres
 	cp "$(FLASCC)/usr/share/LSOBackingStore.as" .
@@ -35,6 +32,9 @@ main: $(XMLOBJ)
 
 	"$(FLASCC)/usr/bin/g++" $(BASE_CFLAGS) $(OPT_CFLAGS) main.c mathlib.c drawdef.c $(XMLOBJ)  VFS.abc $(FLASCC)/usr/lib/AlcVFSZip.abc -symbol-abc=Console.abc -emit-swf -swf-version=17 -swf-size=800x600 -o main.swf $(EXTRACFLAGS)
 
+exe:
+	"$(FLASCC)/usr/bin/g++" $(BASE_CFLAGS) $(OPT_CFLAGS) $(XMLOBJ) tinyxmltest.c -o testxml.exe
+	
 tinyxml2.o : xml/tinyxml2.cpp
 	"$(FLASCC)/usr/bin/g++" $(BASE_CFLAGS) $(OPT_CFLAGS) -c xml/tinyxml2.cpp
 	

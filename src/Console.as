@@ -106,7 +106,6 @@ package com.adobe.flascc
 	
 	private function onKeyDown(evt:KeyboardEvent):void
 	{
-		_tf.appendText("evt.keyCode="+evt.keyCode+"\n");
 		switch(evt.keyCode)
 		{
 			case Keyboard.A:
