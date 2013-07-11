@@ -14,6 +14,12 @@ int main(){
 		printf("txt=%s\n",element->Attribute("id"));
 		element = element->NextSiblingElement("geometry");
 	}
-
+	char str0[] = "#hello,world!";
+	int len = strlen(str0)-1;
+	char *str1 = (char*)malloc(len);
+	memset(str1,0,len);
+	strncpy(str1, str0+1, len);
+	printf("len=%d,\nstr1=%s",len,str1);
+	free(str1);
 	return 0;
 }

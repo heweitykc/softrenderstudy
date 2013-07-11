@@ -1,4 +1,8 @@
-﻿#include "xml/tinyxml2.h"
+﻿#ifndef DRAWDEF_H
+#define DRAWDEF_H
+
+#include "main.h"
+
 using namespace tinyxml2;
 
 typedef struct POLY4DV1_TYP
@@ -49,3 +53,6 @@ typedef struct OBJECT4DV1_TYP
 
 void initCube(OBJECT4DV1 *cube1);	//初始化一个cube
 void initObjWithDae(OBJECT4DV1 *obj1, XMLDocument *doc);
+char* getSourceName(const char *source2);	//获取source名称
+
+#endif

@@ -1,12 +1,4 @@
-#include "AS3/AS3.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include "xml/tinyxml2.h"
-#include "mathlib.h"
-#include "drawdef.h"
-#include "drawutils.h"
+#include "main.h"
 
 using namespace tinyxml2;
 
@@ -26,8 +18,6 @@ float rotationZ=0;
 int d = 10; //视距				
 
 int COLORS[] = {0x0,0xFF0000,0x00FF00,0x0000FF,0xFFFF00,0x00FFFF,0xFFFFFF};
-
-XMLDocument doc;
 
 VECTOR3D cube2[] = {
 	0,0,0+20,		//0
@@ -49,8 +39,6 @@ int cubeIndex[] = {
 	0,1,5,1,5,6
 };
 
-OBJECT4DV1 obj;
-
 MATRIX4X4 m_rotation = {		
 		1,0,0,0,
 		0,1,0,0,
@@ -64,6 +52,9 @@ VECTOR3D rotation2 = {0,1.0,0+20};   //横轴
 VECTOR3D rotation3 = {1.0,0,1+20};
 
 MATRIX4X4 Tcam;
+
+XMLDocument doc;
+OBJECT4DV1 obj;
 
 void translate()
 {
@@ -115,10 +106,6 @@ void proj(int color){
 	for(int i = 0;i<3;i++){
 		Mat_Mul_VECTOR3D_4X4(&m_world[i],&m_rotation,&m_camera[i]);//乘上绕XYZ轴的旋转矩阵
 		Mat_Mul_VECTOR3D_4X4(&m_camera[i],&Tcam,&v_camera2);
-		
-		//memset(pbuff,0,1024);
-		//sprintf(pbuff,"(%f,%f,%f)",v_camera2.x,v_camera2.y,v_camera2.z);
-		//p(pbuff,strlen(pbuff));
 		
 		float z = v_camera2.z;
 		m_proj[i].x = d*v_camera2.x/z;
@@ -188,7 +175,6 @@ extern "C" void loop(int args[])
 }
 
 int main(){
-	printf("starting...");
 	loadmodel();
 	return 0;
 }

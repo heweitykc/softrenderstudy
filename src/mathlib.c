@@ -1,6 +1,5 @@
 ﻿#include "mathlib.h"
 
-
 int Fast_Distance_2D(int x, int y)
 {
 // this function computes the distance from 0,0 to x,y with 3.5% error

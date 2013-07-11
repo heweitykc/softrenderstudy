@@ -1,7 +1,4 @@
-﻿#include "AS3/AS3.h"
-#include "mathlib.h"
-#include "drawutils.h"
-#include "drawdef.h"
+﻿#include "drawdef.h"
 
 void initCube(OBJECT4DV1 *cube1)
 {
@@ -70,19 +67,24 @@ void initObjWithDae(OBJECT4DV1 *obj1, XMLDocument *doc)
 	
 	//顶点解析
 	//遍历几何体
-	tinyxml2::XMLElement *geometryElement = rootElement->FirstChildElement("library_geometries")->FirstChildElement("geometry");
-	while(geometryElement){
+	tinyxml2::XMLElement *geometryElement = rootElement->FirstChildElement("library_geometries")->FirstChildElement("geometry");	
+	while(geometryElement){		
 		tinyxml2::XMLElement *verticesElement = geometryElement->FirstChildElement("mesh")->FirstChildElement("vertices");
 		tinyxml2::XMLElement *inputElement = verticesElement->FirstChildElement("input");
-		if(inputElement->Attribute("semantic") == "POSITION"){
-			const char *source = inputElement->Attribute("source");
-			char sourceName[1024];
-			memset(sourceName,0,1024);
-			strncpy(sourceName,++source,strlen(source));
-			memset(pbuff,0,1024);
-			sprintf(pbuff,"%sourname=%s\n",sourceName);
-			p(pbuff,strlen(pbuff));
+		if(strcmp(inputElement->Attribute("semantic"),"POSITION") == 0){
+			char* sourceName = getSourceName(inputElement->Attribute("source"));
+			p(sourceName);
+			free(sourceName);
 		}
 		geometryElement = geometryElement->NextSiblingElement("geometry");
-	}	
+	}
 }
+
+char* getSourceName(const char *source2)
+{
+	int len = strlen(source2)+1;
+	char *sourceName = (char*)malloc(len);	
+	strncpy(sourceName, source2+1, len);
+	return sourceName;
+}
+

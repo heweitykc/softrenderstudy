@@ -1,4 +1,7 @@
-﻿//矢量
+﻿#ifndef MATHLIB_H
+#define MATHLIB_H
+
+//矢量
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -556,3 +559,5 @@ FIXP16 FIXP16_DIV(FIXP16 fp1, FIXP16 fp2);
 void FIXP16_Print(FIXP16 fp);
 
 #define Write_Error printf
+
+#endif
