@@ -1,4 +1,5 @@
 ﻿#include "drawdef.h"
+#include <string.h>
 
 void initCube(OBJECT4DV1 *cube1)
 {
@@ -68,13 +69,25 @@ void initObjWithDae(OBJECT4DV1 *obj1, XMLDocument *doc)
 	//顶点解析
 	//遍历几何体
 	tinyxml2::XMLElement *geometryElement = rootElement->FirstChildElement("library_geometries")->FirstChildElement("geometry");	
-	while(geometryElement){		
+	while(geometryElement){
 		tinyxml2::XMLElement *verticesElement = geometryElement->FirstChildElement("mesh")->FirstChildElement("vertices");
 		tinyxml2::XMLElement *inputElement = verticesElement->FirstChildElement("input");
 		if(strcmp(inputElement->Attribute("semantic"),"POSITION") == 0){
-			char* sourceName = getSourceName(inputElement->Attribute("source"));
-			p(sourceName);
-			free(sourceName);
+			//char* tempchr = getSourceName(inputElement->Attribute("source"));
+			//p(tempchr);
+			//free(tempchr);
+			inputElement = geometryElement->FirstChildElement("mesh")->FirstChildElement("source")->FirstChildElement("float_array");
+			const char* tempchr2 = inputElement->GetText();
+			printf("=%s=\n",tempchr2);
+			char *pch = strtok((char*)tempchr2, " ");
+			int i=0;
+			while(pch != NULL){
+				obj1->plist[i/3].vert[i%3] = atoi(pch);
+				pch = strtok(NULL," ");
+				i++;
+			}
+			obj1->num_polys = i/3;
+			printf("num=%d\n",obj1->num_polys);
 		}
 		geometryElement = geometryElement->NextSiblingElement("geometry");
 	}

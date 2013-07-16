@@ -7,10 +7,6 @@ using namespace tinyxml2;
 float cam_x=0,cam_y=0,cam_z=-20;		//相机位置
 float ang_x=0,ang_y=0,ang_z=0;		//观察角度
 
-VECTOR3D m_world[3];   //世界系坐标
-VECTOR3D m_camera[3];  //转换后的相机系坐标
-VECTOR3D m_proj[3];  //转换后的透视坐标
-
 float rotationX=0;
 float rotationY=0;
 float rotationZ=0;
@@ -51,12 +47,11 @@ VECTOR3D rotation1 = {0.5,0,0.5+20};
 VECTOR3D rotation2 = {0,1.0,0+20};   //横轴
 VECTOR3D rotation3 = {1.0,0,1+20};
 
-MATRIX4X4 Tcam;
-
 XMLDocument doc;
 OBJECT4DV1 obj;
 
-void translate()
+//计算从世界坐标系移动到相机坐标系的矩阵
+void translate(MATRIX4X4& Tcam)
 {
 	//平移矩阵,与相机原点重合
 	MATRIX4X4 Tcam_inv = {
@@ -100,18 +95,22 @@ void translate()
 }
 
 //3d转换
-void proj(int color){
+void proj(int color,MATRIX4X4& Tcam,VECTOR3D* m_world){
 	VECTOR3D v_camera2;
-	//世界坐标到相机坐标变化
+	VECTOR3D m_camera[3];  //转换后的相机系坐标
+	VECTOR3D m_proj[3];  //转换后的透视坐标
+
 	for(int i = 0;i<3;i++){
 		Mat_Mul_VECTOR3D_4X4(&m_world[i],&m_rotation,&m_camera[i]);//乘上绕XYZ轴的旋转矩阵
-		Mat_Mul_VECTOR3D_4X4(&m_camera[i],&Tcam,&v_camera2);
+		Mat_Mul_VECTOR3D_4X4(&m_camera[i],&Tcam,&v_camera2);	   //世界坐标到相机坐标变化
 		
+		//投影到相机坐标系横截面
 		float z = v_camera2.z;
 		m_proj[i].x = d*v_camera2.x/z;
 		m_proj[i].y = d*v_camera2.y/z;
 	}
 	
+	//绘制连接三个顶点
 	for(int i = 0;i<3;i++){
 		if(i==2){
 			AS3DrawL(m_proj[i],m_proj[0],color);
@@ -132,6 +131,8 @@ void loadmodel()
 extern "C" void loop(int args[])
 {
 	int inup,indown,inleft,inright;
+	MATRIX4X4 Tcam;
+	
 	inline_as3("var num:Number;");
 	inline_as3("num = CModule.activeConsole.inUp;");
     AS3_GetScalarFromVar(inup, num);
@@ -162,16 +163,20 @@ extern "C" void loop(int args[])
 	}
 	
 	rotationZ += (1.0/180.0*PI);
-	RotateArbitraryLine(&m_rotation,&rotation2,&rotation3,rotationZ);
-	translate();
+	RotateArbitraryLine(&m_rotation,&rotation2,&rotation3,rotationZ);	//计算绕(rotation2,rotation3构成的)轴旋转矩阵
+		
+	translate(Tcam);
 	int len = sizeof(cubeIndex) / sizeof(cubeIndex[0]);
+	VECTOR3D m_world[3];	//世界坐标顶点
 	for(int i=0;i<len;i+=3)
 	{	
 		fillTriangle(m_world[0],cube2[cubeIndex[i]]);
 		fillTriangle(m_world[1],cube2[cubeIndex[i+1]]);
 		fillTriangle(m_world[2],cube2[cubeIndex[i+2]]);
-		proj(0);
-	}	
+		proj(0,Tcam,m_world);
+	}
+	
+	
 }
 
 int main(){
