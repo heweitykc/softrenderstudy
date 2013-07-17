@@ -82,13 +82,27 @@ void initObjWithDae(OBJECT4DV1 *obj1, XMLDocument *doc)
 			char *pch = strtok((char*)tempchr2, " ");
 			int i=0;
 			while(pch != NULL){
-				obj1->plist[i/3].vert[i%3] = atoi(pch);
+				obj1->plist[i/3].vlist->M[i%3] = atoi(pch);
 				pch = strtok(NULL," ");
 				i++;
 			}
 			obj1->num_polys = i/3;
-			printf("num=%d\n",obj1->num_polys);
+			printf("顶点：%d\n",obj1->num_polys);
+			
+			inputElement = geometryElement->FirstChildElement("mesh")->FirstChildElement("polylist")->FirstChildElement("p");
+			const char* tempchr3 = inputElement->GetText();
+			pch = strtok((char*)tempchr3, " ");
+			i=0;
+			while(pch != NULL){
+				if(i%2 == 0)
+				{
+					obj1->plist[i/6].vert[i%6] = atoi(pch);
+				}
+				pch = strtok(NULL," ");
+				i++;
+			}
 		}
+		write_obj4dv(obj1);
 		geometryElement = geometryElement->NextSiblingElement("geometry");
 	}
 }
@@ -101,3 +115,13 @@ char* getSourceName(const char *source2)
 	return sourceName;
 }
 
+void write_obj4dv(OBJECT4DV1 *obj)
+{
+	printf("多边形数：" + obj->num_polys);
+	for(int i=0;i<obj->num_polys;i++)
+	{
+		printf("顶点：%f,%f,%f\n",obj->plist[i].vlist->x,obj->plist[i].vlist->y,obj->plist[i].vlist->z);
+		printf("索引：%f,%f,%f\n",obj->plist[i].vert[0],obj->plist[i].vert[1],obj->plist[i].vert[2]);
+	}
+	
+}

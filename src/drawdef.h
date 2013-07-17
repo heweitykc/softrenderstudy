@@ -11,7 +11,7 @@ typedef struct POLY4DV1_TYP
 	int attr;
 	int color;
 	
-	POINT4D_PTR vlist;	//顶点列表
+	POINT4D vlist[3];	//顶点列表
 	int vert[3];		//索引
 } POLY4DV1, *POLY4DV1_PTR;
 
@@ -54,5 +54,7 @@ typedef struct OBJECT4DV1_TYP
 void initCube(OBJECT4DV1 *cube1);	//初始化一个cube
 void initObjWithDae(OBJECT4DV1 *obj1, XMLDocument *doc);
 char* getSourceName(const char *source2);	//获取source名称
+
+void write_obj4dv(OBJECT4DV1 *obj);
 
 #endif

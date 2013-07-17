@@ -166,6 +166,8 @@ extern "C" void loop(int args[])
 	RotateArbitraryLine(&m_rotation,&rotation2,&rotation3,rotationZ);	//计算绕(rotation2,rotation3构成的)轴旋转矩阵
 		
 	translate(Tcam);
+	
+	//开始渲染模型
 	int len = sizeof(cubeIndex) / sizeof(cubeIndex[0]);
 	VECTOR3D m_world[3];	//世界坐标顶点
 	for(int i=0;i<len;i+=3)
