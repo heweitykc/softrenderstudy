@@ -11,29 +11,7 @@ float rotationX=0;
 float rotationY=0;
 float rotationZ=0;
 
-int d = 10; //视距				
-
-int COLORS[] = {0x0,0xFF0000,0x00FF00,0x0000FF,0xFFFF00,0x00FFFF,0xFFFFFF};
-
-VECTOR3D cube2[] = {
-	0,0,0+20,		//0
-	1.0,0,0+20,		//1
-	1.0,1.0,0+20,	//2
-	0,1.0,0+20,		//3
-	0,1.0,1.0+20,	//4
-	0,0,1.0+20,		//5
-	1.0,0,1.0+20,	//6
-	1.0,1.0,1.0+20	//7
-};
-
-int cubeIndex[] = {
-	0,1,3,1,3,2,
-	1,6,2,6,2,7,
-	6,5,7,5,7,4,
-	0,5,3,5,3,4,
-	3,2,4,2,4,7,
-	0,1,5,1,5,6
-};
+int d = 10; //视距
 
 MATRIX4X4 m_rotation = {		
 		1,0,0,0,
@@ -41,8 +19,6 @@ MATRIX4X4 m_rotation = {
 		0,0,1,0,
 		0,0,0,1
 };
-VECTOR3D rotation0 = {0.5,1,0.5+20};   //竖轴
-VECTOR3D rotation1 = {0.5,0,0.5+20};
 
 VECTOR3D rotation2 = {0.0,0.0,0.0};   //横轴
 VECTOR3D rotation3 = {1.0,0.0,0.0};
@@ -168,16 +144,6 @@ extern "C" void loop(int args[])
 	translate(Tcam);
 	
 	VECTOR3D m_world[3];	//世界坐标顶点
-	
-	//开始渲染模型
-	/*int len = sizeof(cubeIndex) / sizeof(cubeIndex[0]);
-	for(int i=0;i<len;i+=3)
-	{	
-		fillTriangle(m_world[0],cube2[cubeIndex[i]]);
-		fillTriangle(m_world[1],cube2[cubeIndex[i+1]]);
-		fillTriangle(m_world[2],cube2[cubeIndex[i+2]]);
-		proj(0,Tcam,m_world);
-	}*/
 	
 	//开始渲染模型
 	for(int i=0;i<obj.num_polys;i++)
