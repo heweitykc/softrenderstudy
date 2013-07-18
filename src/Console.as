@@ -210,7 +210,7 @@ package com.adobe.flascc
     */
     public function consoleWrite(s:String):void
     {
-		trace(s)
+		trace(s);
 		_tf.appendText(s)
 		_tf.scrollV = _tf.maxScrollV
     }

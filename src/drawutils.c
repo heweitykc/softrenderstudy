@@ -19,7 +19,7 @@ void p(const char* str)
     AS3_Trace(myString);
 }
 
-void fillTriangle(VECTOR3D& v3,VECTOR3D& p)
+void fillTriangle(VECTOR3D& v3,POINT4D& p)
 {
 	v3.x = p.x;
 	v3.y = p.y;

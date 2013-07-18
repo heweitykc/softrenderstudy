@@ -44,8 +44,8 @@ MATRIX4X4 m_rotation = {
 VECTOR3D rotation0 = {0.5,1,0.5+20};   //竖轴
 VECTOR3D rotation1 = {0.5,0,0.5+20};
 
-VECTOR3D rotation2 = {0,1.0,0+20};   //横轴
-VECTOR3D rotation3 = {1.0,0,1+20};
+VECTOR3D rotation2 = {0.0,0.0,0.0};   //横轴
+VECTOR3D rotation3 = {1.0,0.0,0.0};
 
 XMLDocument doc;
 OBJECT4DV1 obj;
@@ -123,7 +123,7 @@ void proj(int color,MATRIX4X4& Tcam,VECTOR3D* m_world){
 //读取dae文件
 void loadmodel()
 {
-	doc.LoadFile("1.dae");
+	doc.LoadFile("2.dae");
 	initObjWithDae(&obj,&doc);
 }
 
@@ -167,18 +167,27 @@ extern "C" void loop(int args[])
 		
 	translate(Tcam);
 	
-	//开始渲染模型
-	int len = sizeof(cubeIndex) / sizeof(cubeIndex[0]);
 	VECTOR3D m_world[3];	//世界坐标顶点
+	
+	//开始渲染模型
+	/*int len = sizeof(cubeIndex) / sizeof(cubeIndex[0]);
 	for(int i=0;i<len;i+=3)
 	{	
 		fillTriangle(m_world[0],cube2[cubeIndex[i]]);
 		fillTriangle(m_world[1],cube2[cubeIndex[i+1]]);
 		fillTriangle(m_world[2],cube2[cubeIndex[i+2]]);
 		proj(0,Tcam,m_world);
+	}*/
+	
+	//开始渲染模型
+	for(int i=0;i<obj.num_polys;i++)
+	{
+		POLY4DV1 poly = obj.plist[i];
+		fillTriangle(m_world[0],obj.vlist_local[poly.vert[0]]);
+		fillTriangle(m_world[1],obj.vlist_local[poly.vert[1]]);
+		fillTriangle(m_world[2],obj.vlist_local[poly.vert[2]]);
+		proj(0,Tcam,m_world);
 	}
-	
-	
 }
 
 int main(){

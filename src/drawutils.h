@@ -8,7 +8,7 @@ float YY(VECTOR3D& v);
 
 void p(const char* str);
 
-void fillTriangle(VECTOR3D& v3,VECTOR3D& p);
+void fillTriangle(VECTOR3D& v3,POINT4D& p);
 
 //画点
 void AS3DrawP(float x,float y,int c);

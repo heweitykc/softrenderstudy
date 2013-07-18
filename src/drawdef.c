@@ -69,25 +69,24 @@ void initObjWithDae(OBJECT4DV1 *obj1, XMLDocument *doc)
 	//顶点解析
 	//遍历几何体
 	tinyxml2::XMLElement *geometryElement = rootElement->FirstChildElement("library_geometries")->FirstChildElement("geometry");	
+	int index = 0; //几何体索引
+
 	while(geometryElement){
 		tinyxml2::XMLElement *verticesElement = geometryElement->FirstChildElement("mesh")->FirstChildElement("vertices");
 		tinyxml2::XMLElement *inputElement = verticesElement->FirstChildElement("input");
+		printf("start index = %d\n",index);
 		if(strcmp(inputElement->Attribute("semantic"),"POSITION") == 0){
-			//char* tempchr = getSourceName(inputElement->Attribute("source"));
-			//p(tempchr);
-			//free(tempchr);
 			inputElement = geometryElement->FirstChildElement("mesh")->FirstChildElement("source")->FirstChildElement("float_array");
 			const char* tempchr2 = inputElement->GetText();
-			printf("=%s=\n",tempchr2);
 			char *pch = strtok((char*)tempchr2, " ");
-			int i=0;
+			int i = 0;
 			while(pch != NULL){
-				obj1->plist[i/3].vlist->M[i%3] = atoi(pch);
+				obj1->vlist_local[i/3].M[i%3] = atoi(pch);
+				
 				pch = strtok(NULL," ");
 				i++;
 			}
-			obj1->num_polys = i/3;
-			printf("顶点：%d\n",obj1->num_polys);
+			obj1->num_vertices = i/3;			
 			
 			inputElement = geometryElement->FirstChildElement("mesh")->FirstChildElement("polylist")->FirstChildElement("p");
 			const char* tempchr3 = inputElement->GetText();
@@ -96,14 +95,19 @@ void initObjWithDae(OBJECT4DV1 *obj1, XMLDocument *doc)
 			while(pch != NULL){
 				if(i%2 == 0)
 				{
-					obj1->plist[i/6].vert[i%6] = atoi(pch);
+					//obj1->plist[i/6].vlist = obj1->vlist_local;
+					int value = atoi(pch);
+					obj1->plist[i/6].vert[(i%6)/2] = value;
 				}
 				pch = strtok(NULL," ");
 				i++;
 			}
+			obj1->num_polys = i/6;
+			index++;
 		}
 		write_obj4dv(obj1);
-		geometryElement = geometryElement->NextSiblingElement("geometry");
+		//geometryElement = geometryElement->NextSiblingElement("geometry");
+		geometryElement = NULL;
 	}
 }
 
@@ -117,11 +121,14 @@ char* getSourceName(const char *source2)
 
 void write_obj4dv(OBJECT4DV1 *obj)
 {
-	printf("多边形数：" + obj->num_polys);
+	printf("num_vertices=%d\n",obj->num_vertices);
+	for(int i=0;i<obj->num_vertices;i++)
+	{
+		printf("vertex[%d]:{%0f,%0f,%0f}\n", i, obj->vlist_local[i].x, obj->vlist_local[i].y, obj->vlist_local[i].z);
+	}
+	printf("num_polys=%d\n",obj->num_polys);
 	for(int i=0;i<obj->num_polys;i++)
 	{
-		printf("顶点：%f,%f,%f\n",obj->plist[i].vlist->x,obj->plist[i].vlist->y,obj->plist[i].vlist->z);
-		printf("索引：%f,%f,%f\n",obj->plist[i].vert[0],obj->plist[i].vert[1],obj->plist[i].vert[2]);
+		printf("index[%d]:{%d,%d,%d}\n",i,obj->plist[i].vert[0],obj->plist[i].vert[1],obj->plist[i].vert[2]);
 	}
-	
 }
