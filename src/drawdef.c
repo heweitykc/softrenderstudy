@@ -81,7 +81,7 @@ void initObjWithDae(OBJECT4DV1 *obj1, XMLDocument *doc)
 			char *pch = strtok((char*)tempchr2, " ");
 			int i = 0;
 			while(pch != NULL){
-				obj1->vlist_local[i/3].M[i%3] = atoi(pch);
+				obj1->vlist_local[i/3].M[i%3] = atof(pch);
 				
 				pch = strtok(NULL," ");
 				i++;
