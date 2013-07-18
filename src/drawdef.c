@@ -82,7 +82,6 @@ void initObjWithDae(OBJECT4DV1 *obj1, XMLDocument *doc)
 			int i = 0;
 			while(pch != NULL){
 				obj1->vlist_local[i/3].M[i%3] = atof(pch);
-				
 				pch = strtok(NULL," ");
 				i++;
 			}
@@ -93,11 +92,8 @@ void initObjWithDae(OBJECT4DV1 *obj1, XMLDocument *doc)
 			pch = strtok((char*)tempchr3, " ");
 			i=0;
 			while(pch != NULL){
-				if(i%2 == 0)
-				{
-					//obj1->plist[i/6].vlist = obj1->vlist_local;
-					int value = atoi(pch);
-					obj1->plist[i/6].vert[(i%6)/2] = value;
+				if(i%2 == 0){
+					obj1->plist[i/6].vert[(i%6)/2] = atoi(pch);
 				}
 				pch = strtok(NULL," ");
 				i++;
