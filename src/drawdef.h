@@ -51,6 +51,48 @@ typedef struct OBJECT4DV1_TYP
 	POLY4DV1 plist[128];	//存储多边形的数组
 } OBJECT4DV1, *OBJECT4DV1_PTR;
 
+typedef struct CAM4DV1_TYP
+{
+	int state;
+	int attr;
+	
+	POINT4D pos;	//相机在世界坐标系的位置
+	
+	VECTOR4D dir;	//欧拉角度或者UVN相机模型的注视方向
+	VECTOR4D u;		//UVN相机模型的朝向向量
+	VECTOR4D v;
+	VECTOR4D n;
+	POINT4D target;	//UVN模型的目标位置
+	
+	float view_dist_h;	//水平视距和垂直视距
+	float view_dist_v;
+	
+	float fov;	//水平方向和垂直方向的视野
+	
+	float near_clip_z;	//近裁剪面
+	float far_clip_z;	//远裁剪面
+	
+	PLANE3D rt_clip_plane;	//右剪裁面
+	PLANE3D lt_clip_plane;	//左剪裁面
+	PLANE3D tp_clip_plane;	//上剪裁面
+	PLANE3D bt_clip_plane;	//下剪裁面
+	
+	float viewplane_width;		//视平面的宽度和高度
+	float viewplane_height;		//对于归一化投影,为2X2，否则大小与视口或者屏幕相同
+	
+	//屏幕与视口是同义词
+	float viewport_width;		//屏幕/视口的大小
+	float viewport_height;		//
+	float viewport_center_x;	// 视口的中心
+	float viewport_center_y;	//
+	
+	float aspect_ratio;	//屏幕的宽高比
+	
+	MATRIX4X4 mcam;		//用于存储世界坐标到相机坐标变换矩阵
+	MATRIX4X4 mper;		//用于存储相机坐标到透视坐标变换矩阵
+	MATRIX4X4 mscr;		//用于存储透视坐标到屏幕坐标变换矩阵
+} CAM4DV1, *CAM4DV1_PTR;
+
 void initCube(OBJECT4DV1 *cube1);	//初始化一个cube
 void initObjWithDae(OBJECT4DV1 *obj1, XMLDocument *doc);
 char* getSourceName(const char *source2);	//获取source名称
