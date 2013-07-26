@@ -86,14 +86,27 @@ typedef struct CAM4DV1_TYP
 	float viewport_center_x;	// 视口的中心
 	float viewport_center_y;	//
 	
-	float aspect_ratio;	//屏幕的宽高比
+	float aspect_ratio;			//屏幕的宽高比
 	
-	MATRIX4X4 mcam;		//用于存储世界坐标到相机坐标变换矩阵
-	MATRIX4X4 mper;		//用于存储相机坐标到透视坐标变换矩阵
-	MATRIX4X4 mscr;		//用于存储透视坐标到屏幕坐标变换矩阵
+	MATRIX4X4 mcam;				//世界坐标到相机坐标变换矩阵
+	MATRIX4X4 mper;				//相机坐标到透视坐标变换矩阵
+	MATRIX4X4 mscr;				//透视坐标到屏幕坐标变换矩阵
 } CAM4DV1, *CAM4DV1_PTR;
 
-void initCube(OBJECT4DV1 *cube1);	//初始化一个cube
+void Init_CAM4DV1(
+		CAM4DV1_PTR cam,			//相机对象
+		int cam_attr,				//相机属性
+		POINT4D_PTR cam_pos,		//相机的初始位置
+		VECTOR4D_PTR cam_dir,		//相机的初始角度
+		POINT4D_PTR cam_target,		//UVN相机的初始目标位置
+		float near_clip_z,			//近剪裁面和远剪裁面
+		float far_clip_z,
+		float fov,					//视野，单位为度
+		float viewport_width,		//屏幕/视口的大小
+		float viewport_height
+);
+
+void initCube(OBJECT4DV1 *cube1);			//初始化一个cube
 void initObjWithDae(OBJECT4DV1 *obj1, XMLDocument *doc);
 char* getSourceName(const char *source2);	//获取source名称
 
