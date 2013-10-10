@@ -9,25 +9,41 @@ package com.terrain
 		private const terrainData : Class;
 		
 		private var _heightMap:Vector.<uint>;
-		private var _rawVertex:Vector.<uint>;
+		private var _rawVertex:Vector.<Number>;
 		private var _rawIndex:Vector.<uint>;
 		
 		private var uCoordIncrementSize:Number = 1.0; 	// 每列顶点数;
 		private var vCoordIncrementSize:Number = 1.0; 	// 每行顶点数;
 		private var _cellSpacing:Number = 1.0; 			//每行顶点数;
-		private var _numVertsPerRow:int = 5; 			//顶点格式
-		private var _numCellsperCol:int = 5; 			//column
-		private var _numCellsPerRow:int = 5; 			//row
+		private var _numVertsPerRow:int = 6; 			//顶点格式
+		
+		private var _numCellsperCol:int = 6; 			//column
+		private var _numCellsPerRow:int = 6; 			//row
 		
 		public function TerrainData()
 		{
 			_heightMap = new Vector.<uint>();
-			_rawVertex = new Vector.<uint>();
+			_rawVertex = new Vector.<Number>();
 			_rawIndex = new Vector.<uint>();
 			
 			parseHeightMaps(new terrainData());
 			generateVertex();
 			generateIndices();
+		}
+		
+		public function get vertices():Vector.<Number>
+		{
+			return _rawVertex;
+		}
+		
+		public function get verticesSize():uint
+		{
+			return _numVertsPerRow;
+		}
+		
+		public function get indices():Vector.<uint>
+		{
+			return _rawIndex;
 		}
 		
 		private function parseHeightMaps(data:ByteArray) : Boolean
@@ -43,22 +59,21 @@ package com.terrain
 		
 		private function generateVertex():void
 		{
-			var startZ:int = 0, endZ:int = 63, startX:int = 0, endX:int = 63;
-			var j:int, i:int , x:int, y:int, z:int;
-			for(z = startZ; z >= endZ; z -= _cellSpacing)
+			var startZ:int = 0, endZ:int = _numCellsperCol, startX:int = 0, endX:int = _numCellsPerRow;
+			var j:int, i:int , x:int=1, y:int=1, z:int = 0;
+			for(z = startZ; z <= endZ; z += _cellSpacing)
 			{
 				j = 0;
 				for(x = startX; x <= endX; x += _cellSpacing)
 				{
 					//计算当前顶点缓冲的索引，避免死循环
 					var index : int = i * _numVertsPerRow + j;
-					_rawVertex.push(x,_heightMap[index],z,j * uCoordIncrementSize,i * vCoordIncrementSize);
+					//_rawVertex.push(x,	_heightMap[index],	z,	j * uCoordIncrementSize, i * vCoordIncrementSize);
+					_rawVertex.push(x/_numCellsPerRow,	_heightMap[index],	z,	1, 1, 1);
 					j++;
 				}
 				i++;
 			}
-			
-			
 		}
 		
 		private function generateIndices() : void

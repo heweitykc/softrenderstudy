@@ -4,6 +4,7 @@ package
 	import com.adobe.utils.PerspectiveMatrix3D;
 	import com.adobe.utils.Stats;
 	import com.camera.CommonCamera;
+	import com.core.Mesh;
 	import com.terrain.TerrainData;
 	
 	import flash.display.DisplayObjectContainer;
@@ -28,16 +29,17 @@ package
 	 * @author rajhe
 	 * 
 	 */
+	
+	[SWF(width=800, height=600, frameRate=60, backgroundColor=0x000000)]
 	public class RenderScene extends Sprite
 	{
 		private var _stats:Stats;
 		private var _terrainData:TerrainData;
 		private var _camera:CommonCamera;
+		private var _mesh:Mesh;
+		private var _terrain:Mesh;
 		
 		protected var context3D:Context3D;
-		protected var program:Program3D;
-		protected var vertexbuffer:VertexBuffer3D;
-		protected var indexbuffer:IndexBuffer3D;
 		
 		public function RenderScene()
 		{
@@ -56,60 +58,47 @@ package
 		
 		public function start():void
 		{
-			stage.stage3Ds[0].addEventListener( Event.CONTEXT3D_CREATE, initMolehill );
+			stage.stage3Ds[0].addEventListener(Event.CONTEXT3D_CREATE, initStage3D);
 			stage.stage3Ds[0].requestContext3D();
 			
 			addEventListener(Event.ENTER_FRAME, onRender);
 			_camera = new CommonCamera(stage);
 		}
 		
-		protected function initMolehill(e:Event):void
+		protected function initStage3D(e:Event):void
 		{
+			stage.stage3Ds[0].removeEventListener( Event.CONTEXT3D_CREATE, initStage3D);
+			
 			context3D = stage.stage3Ds[0].context3D;			
 			context3D.configureBackBuffer(800, 600, 1, true);
 			
-			var vertices:Vector.<Number> = Vector.<Number>([
-				-0.3,-0.3,0, 1, 1, 1, // x, y, z, r, g, b
-				-0.3, 0.3, 0, 0, 1, 1,
-				0.3, 0.3, 0, 1, 1, 1]);
+			var rawVertex:Vector.<Number>;
+			var rawIndices:Vector.<uint>;
 			
-			vertexbuffer = context3D.createVertexBuffer(3, 6);
-			vertexbuffer.uploadFromVector(vertices, 0, 3);				
+			rawVertex =  Vector.<Number>([
+				0.0,   0.1, 0,  1, 0, 1,
+				0.1,  -0.1, 0,  0, 1, 1,
+				-0.1, -0.1, 0,  1, 1, 1
+			]);
+			rawIndices = Vector.<uint>([0, 1, 2]);
+			_mesh = new Mesh(context3D);
+			_mesh.upload(rawVertex,rawIndices);
 			
-			var indices:Vector.<uint> = Vector.<uint>([0, 1, 2]);
-			
-			indexbuffer = context3D.createIndexBuffer(3);			
-			indexbuffer.uploadFromVector (indices, 0, 3);		
-			
-			var vertexShaderAssembler : AGALMiniAssembler = new AGALMiniAssembler();
-			vertexShaderAssembler.assemble( Context3DProgramType.VERTEX,
-				"m44 op, va0, vc0\n" + // pos to clipspace
-				"mov v0, va1" // copy UV
-			);			
-			
-			var fragmentShaderAssembler : AGALMiniAssembler= new AGALMiniAssembler();
-			fragmentShaderAssembler.assemble( Context3DProgramType.FRAGMENT,
-				"mov oc, v0"
-			);
-			
-			program = context3D.createProgram();
-			program.upload( vertexShaderAssembler.agalcode, fragmentShaderAssembler.agalcode);
+			_terrain = new Mesh(context3D);
+			_terrain.upload(_terrainData.vertices, _terrainData.indices);
 			
 			_camera.init();
 		}
 		
 		protected function onRender(e:Event):void
 		{
-			context3D.clear(0,0,0,1);
-			
-			context3D.setVertexBufferAt (0, vertexbuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
-			context3D.setVertexBufferAt(1, vertexbuffer, 3, Context3DVertexBufferFormat.FLOAT_3);			
-			context3D.setProgram(program);
-			
 			_camera.loop();
+			
+			context3D.clear(0,0,0,1);
 			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, _camera.m, true);
 			
-			context3D.drawTriangles(indexbuffer);
+			_mesh.render();
+			_terrain.render();
 			
 			context3D.present();			
 		}

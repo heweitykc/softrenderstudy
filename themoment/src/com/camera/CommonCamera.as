@@ -131,8 +131,8 @@ package com.camera
 			updateViewMatrix();
 			
 			m.identity();
-			m.appendRotation(getTimer()/30, Vector3D.Y_AXIS);
-			m.appendRotation(getTimer()/10, Vector3D.X_AXIS);
+			//m.appendRotation(getTimer()/30, Vector3D.Y_AXIS);
+			//m.appendRotation(getTimer()/10, Vector3D.X_AXIS);
 			m.appendTranslation(0, 0, 2);
 			m.append(viewTransform);
 			m.append(projectionTransform);
