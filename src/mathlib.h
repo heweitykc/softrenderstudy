@@ -287,6 +287,13 @@ inline void VECTOR4D_INIT(VECTOR4D_PTR vdst, VECTOR4D_PTR vsrc){
 	vdst->w = vsrc->w;	
 }
 
+inline void VECTOR4D_COPY(VECTOR4D_PTR vdst, VECTOR4D_PTR vsrc){
+	vdst->x = vsrc->x;
+	vdst->y = vsrc->y;
+	vdst->z = vsrc->z;
+	vdst->w = vsrc->w;	
+}
+
 //初始化点的宏
 inline void POINT2D_INIT(POINT2D_PTR vdst, POINT2D_PTR vsrc){
 	vdst->x = vsrc->x;
