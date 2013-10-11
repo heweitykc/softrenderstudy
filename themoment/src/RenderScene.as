@@ -37,6 +37,7 @@ package
 		private var _terrainData:TerrainData;
 		private var _camera:CommonCamera;
 		private var _mesh:Mesh;
+		private var _round:Mesh;
 		private var _terrain:Mesh;
 		
 		protected var context3D:Context3D;
@@ -76,13 +77,27 @@ package
 			var rawIndices:Vector.<uint>;
 			
 			rawVertex =  Vector.<Number>([
-				0.0,   0.1, 0,  1, 0, 1,
-				0.1,  -0.1, 0,  0, 1, 1,
-				-0.1, -0.1, 0,  1, 1, 1
+				0.5,   0.5, 0.5,  1, 0, 1,
+				0.5,  0.5, -0.5,  0, 1, 1,
+				-0.5, 0.5, -0.5,  1, 1, 1,
+				
+				-0.5, 0.5, 0.5,  1, 0, 1,
+				0.5,  -0.5, 0.5,  0, 1, 1,
+				-0.5, -0.5, 0.5,  1, 1, 1,
+				
+				-0.5, -0.5, -0.5,  1, 0, 1,
+				0.5,  -0.5, -0.5,  0, 1, 1
 			]);
-			rawIndices = Vector.<uint>([0, 1, 2]);
+			rawIndices = Vector.<uint>([
+				0,1,2,	0,2,3,
+				0,7,1,	0,4,7,
+				1,7,6,	1,6,2,
+				2,6,5,	2,3,5,
+				0,5,4,	0,3,5,
+				5,6,7,	4,5,7
+			]);
 			_mesh = new Mesh(context3D);
-			_mesh.upload(rawVertex,rawIndices);
+			_mesh.upload(rawVertex, rawIndices);
 			
 			_terrain = new Mesh(context3D);
 			_terrain.upload(_terrainData.vertices, _terrainData.indices);
@@ -98,7 +113,7 @@ package
 			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, _camera.m, true);
 			
 			_mesh.render();
-			_terrain.render();
+			//_terrain.render();
 			
 			context3D.present();			
 		}

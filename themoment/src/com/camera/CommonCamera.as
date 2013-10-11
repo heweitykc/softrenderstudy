@@ -4,6 +4,7 @@ package com.camera
 	
 	import flash.display.Stage;
 	import flash.events.KeyboardEvent;
+	import flash.ui.Keyboard;
 	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
 	import flash.utils.getTimer;
@@ -11,18 +12,14 @@ package com.camera
 	public class CommonCamera
 	{
 		protected var projectionTransform:PerspectiveMatrix3D;
-		protected var cameraWorldTransform:Matrix3D;
-		protected var viewTransform:Matrix3D;
-		protected var cameraLinearVelocity:Vector3D;
-		protected var cameraRotationVelocity:Number;
-		protected var cameraRotationAcceleration:Number;
-		protected var cameraLinearAcceleration:Number;
 		
 		protected const MAX_FORWARD_VELOCITY:Number = 0.05;
 		protected const MAX_ROTATION_VELOCITY:Number = 0.5;
 		protected const LINEAR_ACCELERATION:Number = 0.0005;
 		protected const ROTATION_ACCELERATION:Number = 0.01;
 		protected const DAMPING:Number = 1.09;
+		
+		protected var _dxcamera:DxCamera;
 		
 		private var _stage:Stage;
 		
@@ -37,17 +34,41 @@ package com.camera
 		{
 			switch (e.keyCode) 
 			{ 
-				case 37:
-					cameraRotationAcceleration = -ROTATION_ACCELERATION;
+				case Keyboard.A:	//left
+					_dxcamera.strafe(0.01);
 					break
-				case 38:
-					cameraLinearAcceleration = LINEAR_ACCELERATION;
+				case Keyboard.W:	//up
+					_dxcamera.walk(0.01);
 					break
-				case 39:
-					cameraRotationAcceleration = ROTATION_ACCELERATION;
+				case Keyboard.D:	//right
+					_dxcamera.strafe(-0.01);
 					break;
-				case 40:
-					cameraLinearAcceleration = -LINEAR_ACCELERATION;
+				case Keyboard.S:	//down
+					_dxcamera.walk(-0.01);
+					break;
+				case Keyboard.R:	//down
+					_dxcamera.fly(0.01);
+					break;
+				case Keyboard.F:	//down
+					_dxcamera.fly(-0.01);
+					break;
+				case Keyboard.UP:	//down
+					_dxcamera.pitch(0.1);
+					break;
+				case Keyboard.DOWN:	//down
+					_dxcamera.pitch(-0.1);
+					break;
+				case Keyboard.LEFT:	//down
+					_dxcamera.yaw(-0.1);
+					break;
+				case Keyboard.RIGHT:	//down
+					_dxcamera.yaw(0.1);
+					break;
+				case Keyboard.M:	//down
+					_dxcamera.roll(-0.01);
+					break;
+				case Keyboard.N:	//down
+					_dxcamera.roll(0.01);
 					break;
 			}
 		}
@@ -58,28 +79,16 @@ package com.camera
 			{ 
 				case 37:
 				case 39:
-					cameraRotationAcceleration = 0;
 					break
 				case 38:
 				case 40:
-					cameraLinearAcceleration = 0;
 					break
 			}			
 		}
 		
 		public function init():void
 		{
-			cameraWorldTransform = new Matrix3D();
-			cameraWorldTransform.appendTranslation(0, 0, -2);
-			viewTransform = new Matrix3D();
-			viewTransform = cameraWorldTransform.clone();
-			viewTransform.invert();			
-			
-			cameraLinearVelocity = new Vector3D();
-			cameraRotationVelocity = 0;
-			
-			cameraLinearAcceleration = 0;
-			cameraRotationAcceleration = 0;
+			_dxcamera = new DxCamera(CameraType.AIRCRAFT);
 			
 			projectionTransform = new PerspectiveMatrix3D();
 			var aspect:Number = 4/3;
@@ -89,52 +98,15 @@ package com.camera
 			projectionTransform.perspectiveFieldOfViewLH(fov, aspect, zNear, zFar);
 		}
 		
-		protected function calculateUpdatedVelocity(curVelocity:Number, curAcceleration:Number, maxVelocity:Number):Number
-		{
-			var newVelocity:Number;
-			
-			if (curAcceleration != 0)
-			{
-				newVelocity = curVelocity + curAcceleration;
-				if (newVelocity > maxVelocity)
-				{
-					newVelocity = maxVelocity;
-				}
-				else if (newVelocity < -maxVelocity)
-				{
-					newVelocity = - maxVelocity;
-				}
-			}
-			else
-			{
-				newVelocity = curVelocity / DAMPING;
-			}
-			return newVelocity;
-		}
-		
-		protected function updateViewMatrix():void
-		{
-			cameraLinearVelocity.z = calculateUpdatedVelocity(cameraLinearVelocity.z, cameraLinearAcceleration, MAX_FORWARD_VELOCITY);
-			cameraRotationVelocity = calculateUpdatedVelocity(cameraRotationVelocity, cameraRotationAcceleration, MAX_ROTATION_VELOCITY); 
-			
-			cameraWorldTransform.appendRotation(cameraRotationVelocity, Vector3D.Y_AXIS, cameraWorldTransform.position);			
-			cameraWorldTransform.position = cameraWorldTransform.transformVector(cameraLinearVelocity);			
-			
-			viewTransform.copyFrom(cameraWorldTransform);
-			viewTransform.invert();
-		}
-		
 		public var m:Matrix3D = new Matrix3D();
 		
 		public function loop():void
 		{
-			updateViewMatrix();
-			
 			m.identity();
 			//m.appendRotation(getTimer()/30, Vector3D.Y_AXIS);
 			//m.appendRotation(getTimer()/10, Vector3D.X_AXIS);
-			m.appendTranslation(0, 0, 2);
-			m.append(viewTransform);
+			m.appendTranslation(0, 0, 10);
+			m.append(_dxcamera.viewMatrix);
 			m.append(projectionTransform);
 		}
 	}

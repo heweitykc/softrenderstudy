@@ -37,7 +37,7 @@ package com.core
 			vertexbuffer.uploadFromVector(_rawVertex, 0, _rawVertex.length / 6);				
 			
 			indexbuffer = context3D.createIndexBuffer(_rawIndices.length);			
-			indexbuffer.uploadFromVector(_rawIndices, 0, 3);
+			indexbuffer.uploadFromVector(_rawIndices, 0, _rawIndices.length);
 			
 			var vertexShaderAssembler:AGALMiniAssembler = new AGALMiniAssembler();
 			vertexShaderAssembler.assemble( Context3DProgramType.VERTEX,

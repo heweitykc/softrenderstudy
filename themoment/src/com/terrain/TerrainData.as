@@ -17,8 +17,9 @@ package com.terrain
 		private var _cellSpacing:Number = 1.0; 			//每行顶点数;
 		private var _numVertsPerRow:int = 6; 			//顶点格式
 		
-		private var _numCellsperCol:int = 6; 			//column
-		private var _numCellsPerRow:int = 6; 			//row
+		private var _numCellsperCol:int = 2; 			//column
+		private var _numCellsPerRow:int = 2; 			//row
+		private var _heightScale:Number = 1/256;
 		
 		public function TerrainData()
 		{
@@ -60,7 +61,8 @@ package com.terrain
 		private function generateVertex():void
 		{
 			var startZ:int = 0, endZ:int = _numCellsperCol, startX:int = 0, endX:int = _numCellsPerRow;
-			var j:int, i:int , x:int=1, y:int=1, z:int = 0;
+			var j:int, i:int , x:int = 1, y:int = 1, z:int = 0;
+			trace("顶点开始：");
 			for(z = startZ; z <= endZ; z += _cellSpacing)
 			{
 				j = 0;
@@ -68,8 +70,8 @@ package com.terrain
 				{
 					//计算当前顶点缓冲的索引，避免死循环
 					var index : int = i * _numVertsPerRow + j;
-					//_rawVertex.push(x,	_heightMap[index],	z,	j * uCoordIncrementSize, i * vCoordIncrementSize);
-					_rawVertex.push(x/_numCellsPerRow,	_heightMap[index],	z,	1, 1, 1);
+					_rawVertex.push(x/endX,	_heightMap[index]*_heightScale,	0,	1, 1, 1);
+					trace("x="+(x/endX)+",y="+_heightMap[index]*_heightScale+",z="+0);
 					j++;
 				}
 				i++;
@@ -95,6 +97,7 @@ package com.terrain
 					baseIndex += 6;
 				}
 			}
+			trace(_rawIndex.join(","));
 			trace("索引解析完毕");
 		}
 	}
