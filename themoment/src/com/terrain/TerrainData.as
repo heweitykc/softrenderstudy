@@ -19,8 +19,8 @@ package com.terrain
 		
 		private var _numCellsperCol:int = 64; 			//column
 		private var _numCellsPerRow:int = 64; 			//row
-		private var _heightScale:Number = 1/50;
-		private var _cellScale:Number = 1/35;
+		private var _heightScale:Number = 1/20;
+		private var _cellScale:Number = 1/10;
 		
 		public function TerrainData()
 		{
@@ -68,7 +68,7 @@ package com.terrain
 					_rawVertex.push(x, (_heightMap[x*_numCellsPerRow+z]*_heightScale), z, 1*Math.random(), 1*Math.random(), 1*Math.random());
 				}
 			}
-			trace(_rawVertex.join(","));
+			//trace(_rawVertex.join(","));
 		}
 		
 		private function generateIndices() : void
@@ -78,11 +78,11 @@ package com.terrain
 			{
 				for(var z:int = 0; z<_numCellsPerRow-1; z++)
 				{
-					_rawIndex.push(x*_numCellsPerRow+z, (x+1)*_numCellsPerRow+z, x*_numCellsPerRow+z+1);		// (x,z), (x+1,z), (x,z+1)
-					_rawIndex.push((x+1)*_numCellsPerRow+z, x*_numCellsPerRow+z+1, (x+1)*_numCellsPerRow+z+1);	// (x+1,z), (x,z+1), (x+1, z+1)
+					_rawIndex.push(x*_numCellsPerRow+z,     (x+1)*_numCellsPerRow+z,  x*_numCellsPerRow+z+1);		// (x,z), (x+1,z), (x,z+1)
+					_rawIndex.push((x+1)*_numCellsPerRow+z, x*_numCellsPerRow+z+1,   (x+1)*_numCellsPerRow+z+1);	// (x+1,z), (x,z+1), (x+1, z+1)
 				}
 			}
-			trace(_rawIndex.join(","));
+			//trace(_rawIndex.join(","));
 		}
 	}
 }

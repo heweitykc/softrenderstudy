@@ -62,7 +62,7 @@ package com.camera
 		protected function keyDownEventHandler(e:KeyboardEvent):void
 		{
 			var angle:Number = 10/180*Math.PI;
-			var units:Number = 0.05;
+			var units:Number = 0.1;
 			switch (e.keyCode) 
 			{ 
 				case Keyboard.W:	//up
