@@ -5,7 +5,7 @@ package com.terrain
 
 	public class TerrainData
 	{
-		[Embed(source="../../../assets/heightMap.jpg",mimeType = "application/octet-stream")] 
+		[Embed(source="../../../assets/coastMountain64.raw",mimeType = "application/octet-stream")] 
 		private const terrainData : Class;
 		
 		private var _heightMap:Vector.<uint>;
@@ -17,9 +17,10 @@ package com.terrain
 		private var _cellSpacing:Number = 1.0; 			//每行顶点数;
 		private var _numVertsPerRow:int = 6; 			//顶点格式
 		
-		private var _numCellsperCol:int = 2; 			//column
-		private var _numCellsPerRow:int = 2; 			//row
-		private var _heightScale:Number = 1/256;
+		private var _numCellsperCol:int = 64; 			//column
+		private var _numCellsPerRow:int = 64; 			//row
+		private var _heightScale:Number = 1/50;
+		private var _cellScale:Number = 1/35;
 		
 		public function TerrainData()
 		{
@@ -60,45 +61,28 @@ package com.terrain
 		
 		private function generateVertex():void
 		{
-			var startZ:int = 0, endZ:int = _numCellsperCol, startX:int = 0, endX:int = _numCellsPerRow;
-			var j:int, i:int , x:int = 1, y:int = 1, z:int = 0;
-			trace("顶点开始：");
-			for(z = startZ; z <= endZ; z += _cellSpacing)
+			for(var x:int = 0; x<_numCellsperCol; x++)
 			{
-				j = 0;
-				for(x = startX; x <= endX; x += _cellSpacing)
+				for(var z:int = 0; z<_numCellsPerRow; z++)
 				{
-					//计算当前顶点缓冲的索引，避免死循环
-					var index : int = i * _numVertsPerRow + j;
-					_rawVertex.push(x/endX,	_heightMap[index]*_heightScale,	0,	1, 1, 1);
-					trace("x="+(x/endX)+",y="+_heightMap[index]*_heightScale+",z="+0);
-					j++;
+					_rawVertex.push(x, (_heightMap[x*_numCellsPerRow+z]*_heightScale), z, 1*Math.random(), 1*Math.random(), 1*Math.random());
 				}
-				i++;
 			}
+			trace(_rawVertex.join(","));
 		}
 		
 		private function generateIndices() : void
 		{
-			var baseIndex : int = 0;
-			
-			for(var i:int = 0; i<_numCellsperCol; i++)
+			var size:uint = 6;
+			for(var x:int = 0; x<_numCellsperCol-1; x++)
 			{
-				for(var j:int = 0; j<_numCellsPerRow; j++)
+				for(var z:int = 0; z<_numCellsPerRow-1; z++)
 				{
-					_rawIndex[baseIndex]       = i * _numVertsPerRow + j;
-					_rawIndex[baseIndex + 1]   = i * _numVertsPerRow + j + 1;
-					_rawIndex[baseIndex + 2]   = (i + 1) * _numVertsPerRow + j;
-					
-					_rawIndex[baseIndex + 3]   = (i + 1) * _numVertsPerRow + j;
-					_rawIndex[baseIndex + 4]   = i * _numVertsPerRow + j + 1;
-					_rawIndex[baseIndex + 5]   = (i + 1) * _numVertsPerRow + j + 1;
-					
-					baseIndex += 6;
+					_rawIndex.push(x*_numCellsPerRow+z, (x+1)*_numCellsPerRow+z, x*_numCellsPerRow+z+1);		// (x,z), (x+1,z), (x,z+1)
+					_rawIndex.push((x+1)*_numCellsPerRow+z, x*_numCellsPerRow+z+1, (x+1)*_numCellsPerRow+z+1);	// (x+1,z), (x,z+1), (x+1, z+1)
 				}
 			}
 			trace(_rawIndex.join(","));
-			trace("索引解析完毕");
 		}
 	}
 }
