@@ -25,6 +25,7 @@ package com.camera
 		
 		private var _stage:Stage;
 		private var _p0:Point = new Point();
+		private var _keyDown:Object;
 		
 		public function CommonCamera(stage:Stage)
 		{
@@ -32,6 +33,7 @@ package com.camera
 			stage.addEventListener( KeyboardEvent.KEY_DOWN, keyDownEventHandler );   
 			stage.addEventListener( KeyboardEvent.KEY_UP, keyUpEventHandler );
 			stage.addEventListener(MouseEvent.MOUSE_DOWN,mouseDownHandler);
+			_keyDown = {};
 		}
 		
 		protected function mouseDownHandler(e:MouseEvent):void
@@ -61,60 +63,38 @@ package com.camera
 		
 		protected function keyDownEventHandler(e:KeyboardEvent):void
 		{
+			_keyDown[e.keyCode] = true;
+		}
+		
+		private function operate():void
+		{
 			var angle:Number = 10/180*Math.PI;
 			var units:Number = 0.1;
-			switch (e.keyCode) 
-			{ 
-				case Keyboard.W:	//up
-					_dxcamera.walk(units);
-					break;
-				case Keyboard.S:	//down
-					_dxcamera.walk(-units);
-					break;
-				case Keyboard.A:	//left
-					_dxcamera.strafe(-units);
-					break;
-				case Keyboard.D:	//right
-					_dxcamera.strafe(units);
-					break;
-				case Keyboard.R:	//down
-					_dxcamera.fly(units);
-					break;
-				case Keyboard.F:	//down
-					_dxcamera.fly(-units);
-					break;
-				case Keyboard.UP:	//down
-					_dxcamera.pitch(angle);
-					break;
-				case Keyboard.DOWN:	//down
-					_dxcamera.pitch(-angle);
-					break;
-				case Keyboard.LEFT:	//down
-					_dxcamera.yaw(-angle);
-					break;
-				case Keyboard.RIGHT:	//down
-					_dxcamera.yaw(angle);
-					break;
-				case Keyboard.M:	//down
-					_dxcamera.roll(-angle);
-					break;
-				case Keyboard.N:	//down
-					_dxcamera.roll(angle);
-					break;
-			}
+			
+			if(_keyDown[Keyboard.W])
+				_dxcamera.walk(units);
+			else if(_keyDown[Keyboard.S])
+				_dxcamera.walk(-units);
+			
+			if(_keyDown[Keyboard.A])
+				_dxcamera.strafe(-units);
+			else if(_keyDown[Keyboard.D])
+				_dxcamera.strafe(units);
+			
+			if(_keyDown[Keyboard.R])
+				_dxcamera.fly(units);
+			else if(_keyDown[Keyboard.F])
+				_dxcamera.fly(-units);
+			
+			if(_keyDown[Keyboard.M])
+				_dxcamera.roll(-angle);
+			else if(_keyDown[Keyboard.N])
+				_dxcamera.roll(angle);
 		}
 		
 		protected function keyUpEventHandler(e:KeyboardEvent):void
 		{
-			switch (e.keyCode) 
-			{ 
-				case 37:
-				case 39:
-					break
-				case 38:
-				case 40:
-					break
-			}			
+			_keyDown[e.keyCode] = false;			
 		}
 		
 		public function init():void
@@ -133,6 +113,7 @@ package com.camera
 		
 		public function loop():void
 		{
+			operate();
 			m.identity();
 			//m.appendRotation(getTimer()/30, Vector3D.Y_AXIS);
 			//m.appendRotation(getTimer()/10, Vector3D.X_AXIS);
