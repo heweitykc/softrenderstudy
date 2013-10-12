@@ -68,7 +68,7 @@ package com.camera
 		
 		private function operate():void
 		{
-			var angle:Number = 10/180*Math.PI;
+			var angle:Number = 30/180*Math.PI;
 			var units:Number = 0.1;
 			
 			if(_keyDown[Keyboard.W])
