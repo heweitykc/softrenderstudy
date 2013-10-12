@@ -5,6 +5,7 @@ package
 	import com.adobe.utils.Stats;
 	import com.camera.CommonCamera;
 	import com.core.Mesh;
+	import com.geomsolid.Plane;
 	import com.terrain.TerrainData;
 	
 	import flash.display.DisplayObjectContainer;
@@ -39,6 +40,7 @@ package
 		private var _mesh:Mesh;
 		private var _round:Mesh;
 		private var _terrain:Mesh;
+		private var _plane:Plane;
 		
 		protected var context3D:Context3D;
 		
@@ -102,6 +104,8 @@ package
 			_terrain = new Mesh(context3D);
 			_terrain.upload(_terrainData.vertices, _terrainData.indices);
 			
+			_plane = new Plane(context3D,5,5,null);
+			
 			_camera.init();
 		}
 		
@@ -114,6 +118,7 @@ package
 			
 			_mesh.render();
 			//_terrain.render();
+			_plane.render();
 			
 			context3D.present();			
 		}

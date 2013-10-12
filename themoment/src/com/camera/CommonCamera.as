@@ -4,9 +4,11 @@ package com.camera
 	
 	import flash.display.Stage;
 	import flash.events.KeyboardEvent;
-	import flash.ui.Keyboard;
+	import flash.events.MouseEvent;
 	import flash.geom.Matrix3D;
+	import flash.geom.Point;
 	import flash.geom.Vector3D;
+	import flash.ui.Keyboard;
 	import flash.utils.getTimer;
 
 	public class CommonCamera
@@ -22,53 +24,82 @@ package com.camera
 		protected var _dxcamera:DxCamera;
 		
 		private var _stage:Stage;
+		private var _p0:Point = new Point();
 		
 		public function CommonCamera(stage:Stage)
 		{
 			_stage = stage;
 			stage.addEventListener( KeyboardEvent.KEY_DOWN, keyDownEventHandler );   
 			stage.addEventListener( KeyboardEvent.KEY_UP, keyUpEventHandler );
+			stage.addEventListener(MouseEvent.MOUSE_DOWN,mouseDownHandler);
+		}
+		
+		protected function mouseDownHandler(e:MouseEvent):void
+		{
+			_stage.addEventListener(MouseEvent.MOUSE_MOVE,mouseMoveHandler);
+			_stage.addEventListener(MouseEvent.MOUSE_UP,mouseUpHandler);
+			_p0.x = _stage.mouseX;
+			_p0.y = _stage.mouseY;
+		}
+		
+		protected function mouseMoveHandler(e:MouseEvent):void
+		{
+			var dx:Number = _stage.mouseX - _p0.x;
+			var dy:Number = _stage.mouseY - _p0.y;
+			_dxcamera.yaw(dx/100);
+			_dxcamera.pitch(dy/100);
+			
+			_p0.x = _stage.mouseX;
+			_p0.y = _stage.mouseY;
+		}
+		
+		protected function mouseUpHandler(e:MouseEvent):void
+		{
+			_stage.removeEventListener(MouseEvent.MOUSE_MOVE,mouseMoveHandler);
+			_stage.removeEventListener(MouseEvent.MOUSE_UP,mouseUpHandler);
 		}
 		
 		protected function keyDownEventHandler(e:KeyboardEvent):void
 		{
+			var angle:Number = 10/180*Math.PI;
+			var units:Number = 0.05;
 			switch (e.keyCode) 
 			{ 
-				case Keyboard.A:	//left
-					_dxcamera.strafe(0.01);
-					break
 				case Keyboard.W:	//up
-					_dxcamera.walk(0.01);
-					break
-				case Keyboard.D:	//right
-					_dxcamera.strafe(-0.01);
+					_dxcamera.walk(units);
 					break;
 				case Keyboard.S:	//down
-					_dxcamera.walk(-0.01);
+					_dxcamera.walk(-units);
+					break;
+				case Keyboard.A:	//left
+					_dxcamera.strafe(-units);
+					break;
+				case Keyboard.D:	//right
+					_dxcamera.strafe(units);
 					break;
 				case Keyboard.R:	//down
-					_dxcamera.fly(0.01);
+					_dxcamera.fly(units);
 					break;
 				case Keyboard.F:	//down
-					_dxcamera.fly(-0.01);
+					_dxcamera.fly(-units);
 					break;
 				case Keyboard.UP:	//down
-					_dxcamera.pitch(0.1);
+					_dxcamera.pitch(angle);
 					break;
 				case Keyboard.DOWN:	//down
-					_dxcamera.pitch(-0.1);
+					_dxcamera.pitch(-angle);
 					break;
 				case Keyboard.LEFT:	//down
-					_dxcamera.yaw(-0.1);
+					_dxcamera.yaw(-angle);
 					break;
 				case Keyboard.RIGHT:	//down
-					_dxcamera.yaw(0.1);
+					_dxcamera.yaw(angle);
 					break;
 				case Keyboard.M:	//down
-					_dxcamera.roll(-0.01);
+					_dxcamera.roll(-angle);
 					break;
 				case Keyboard.N:	//down
-					_dxcamera.roll(0.01);
+					_dxcamera.roll(angle);
 					break;
 			}
 		}
@@ -88,7 +119,7 @@ package com.camera
 		
 		public function init():void
 		{
-			_dxcamera = new DxCamera(CameraType.AIRCRAFT);
+			_dxcamera = new DxCamera(DxCamera.AIRCRAFT);
 			
 			projectionTransform = new PerspectiveMatrix3D();
 			var aspect:Number = 4/3;
@@ -105,7 +136,7 @@ package com.camera
 			m.identity();
 			//m.appendRotation(getTimer()/30, Vector3D.Y_AXIS);
 			//m.appendRotation(getTimer()/10, Vector3D.X_AXIS);
-			m.appendTranslation(0, 0, 10);
+			m.appendTranslation(0, 0, 12);
 			m.append(_dxcamera.viewMatrix);
 			m.append(projectionTransform);
 		}
