@@ -21,7 +21,7 @@ package com.core
 		
 		public function Mesh(context3d:Context3D)
 		{
-			context3D = context3d;
+			this.context3D = context3d;
 		}
 		
 		public function upload(rawVertex:Vector.<Number>, rawIndices:Vector.<uint>):void

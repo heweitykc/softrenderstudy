@@ -117,8 +117,8 @@ package
 			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, _camera.m, true);
 			
 			_mesh.render();
-			//_terrain.render();
-			_plane.render();
+			//_plane.render();
+			_terrain.render();
 			
 			context3D.present();			
 		}

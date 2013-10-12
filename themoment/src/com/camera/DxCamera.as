@@ -34,10 +34,10 @@ package com.camera
 				vec = new Vector3D(_right.x,0,_right.z);
 				vec.scaleBy(units)
 				_pos = _pos.add(vec);
-			}
-			else{
-				_right.scaleBy(units);
-				_pos = _pos.add(_right);
+			}else{
+				var vec2:Vector3D = _right.clone();
+				vec2.scaleBy(units);
+				_pos = _pos.add(vec2);
 			}
 				
 		}
@@ -48,8 +48,9 @@ package com.camera
 				_pos.y += units;
 			}
 			else{
-				_up.scaleBy(units);
-				_pos = _pos.add(_up);
+				var vec2:Vector3D = _up.clone();
+				vec2.scaleBy(units);
+				_pos = _pos.add(vec2);
 			}
 		}
 		
@@ -62,8 +63,9 @@ package com.camera
 				_pos = _pos.add(vec);
 			}
 			else{
-				_look.scaleBy(units);
-				_pos = _pos.add(_look);
+				var vec2:Vector3D = _look.clone();
+				vec2.scaleBy(units);
+				_pos = _pos.add(vec2);
 			}
 		}
 		
@@ -121,7 +123,6 @@ package com.camera
 			]);
 			
 			var m:Matrix3D = new Matrix3D(vecs);
-			trace(m.rawData.join(","));
 			return m;
 		}
 		

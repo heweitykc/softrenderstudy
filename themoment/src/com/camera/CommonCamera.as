@@ -46,8 +46,8 @@ package com.camera
 		{
 			var dx:Number = _stage.mouseX - _p0.x;
 			var dy:Number = _stage.mouseY - _p0.y;
-			_dxcamera.yaw(dx/100);
-			_dxcamera.pitch(dy/100);
+			_dxcamera.yaw(dx/40);
+			_dxcamera.pitch(dy/40);
 			
 			_p0.x = _stage.mouseX;
 			_p0.y = _stage.mouseY;
