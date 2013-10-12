@@ -46,10 +46,12 @@
             params.bgcolor = "${bgcolor}";
             params.allowscriptaccess = "sameDomain";
             params.allowfullscreen = "true";
+			params.wmode = "direct";
             var attributes = {};
             attributes.id = "${application}";
             attributes.name = "${application}";
             attributes.align = "middle";
+			attributes.wmode = "direct";
             swfobject.embedSWF(
                 "${swf}.swf", "flashContent", 
                 "${width}", "${height}", 

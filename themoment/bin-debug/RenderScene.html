@@ -46,10 +46,12 @@
             params.bgcolor = "#000000";
             params.allowscriptaccess = "sameDomain";
             params.allowfullscreen = "true";
+			params.wmode = "direct";
             var attributes = {};
             attributes.id = "RenderScene";
             attributes.name = "RenderScene";
             attributes.align = "middle";
+			attributes.wmode = "direct";
             swfobject.embedSWF(
                 "RenderScene.swf", "flashContent", 
                 "800", "600", 
