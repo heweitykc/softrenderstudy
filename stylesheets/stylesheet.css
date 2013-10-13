@@ -425,3 +425,10 @@ Small Device Styles
   }
 
 }
+
+
+.acenter{
+	text-align:center;
+	margin-left:auto; 
+	margin-right:auto;
+}
