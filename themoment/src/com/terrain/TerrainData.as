@@ -65,7 +65,8 @@ package com.terrain
 			{
 				for(var z:int = 0; z<_numCellsPerRow; z++)
 				{
-					_rawVertex.push(x, (_heightMap[x*_numCellsPerRow+z]*_heightScale), z, 1*Math.random(), 1*Math.random(), 1*Math.random());
+					var scale:Number = _heightMap[x * _numCellsPerRow + z] * _heightScale;
+					_rawVertex.push(x, scale, z, 1*Math.random()*0.5, 1*Math.random()*0.5, 1*Math.random()*0.5);
 				}
 			}
 			//trace(_rawVertex.join(","));
