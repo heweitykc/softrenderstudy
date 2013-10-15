@@ -110,9 +110,9 @@ package
 			
 			context3D.clear(0,0,0,1);
 			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, _camera.m, true);
-			
-			_mesh.render();
+						
 			_terrain.render();
+			_mesh.render();
 			_stats.update(2,0);
 			context3D.present();			
 		}

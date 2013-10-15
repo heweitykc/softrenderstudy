@@ -60,6 +60,9 @@ package com.core
 			context3D.setVertexBufferAt(1, vertexbuffer, 3, Context3DVertexBufferFormat.FLOAT_3);			
 			context3D.setProgram(program);
 			context3D.drawTriangles(indexbuffer);
+			
+			context3D.setVertexBufferAt(0,null);
+			context3D.setVertexBufferAt(1,null);
 		}
 	}
 }

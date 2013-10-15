@@ -12,6 +12,7 @@ package com.terrain
 	import flash.display3D.Program3D;
 	import flash.display3D.VertexBuffer3D;
 	import flash.display3D.textures.Texture;
+	import flash.geom.Vector3D;
 	import flash.utils.ByteArray;
 
 	public class Terrain
@@ -52,6 +53,8 @@ package com.terrain
 			_rawVertex = new Vector.<Number>();
 			_rawIndex = new Vector.<uint>();
 			
+			_bmp = new tileData();
+			
 			parseHeightMaps(new terrainData());
 			generateVertex();
 			generateIndices();
@@ -75,8 +78,7 @@ package com.terrain
 		}
 		
 		private function generate():void
-		{	
-			_bmp = new tileData();
+		{				
 			texture0 = context3D.createTexture(_bmp.bitmapData.width, _bmp.bitmapData.height, Context3DTextureFormat.BGRA, false);
 			texture0.uploadFromBitmapData(_bmp.bitmapData);
 			
@@ -110,6 +112,10 @@ package com.terrain
 			context3D.setTextureAt(0,texture0);
 			context3D.setProgram(program);
 			context3D.drawTriangles(indexbuffer);
+			
+			context3D.setVertexBufferAt(0,null);
+			context3D.setVertexBufferAt(1,null);
+			context3D.setTextureAt(0,null);
 		}
 		
 		private function parseHeightMaps(data:ByteArray) : Boolean
@@ -126,6 +132,7 @@ package com.terrain
 		private function generateVertex():void
 		{
 			var u:Number, v:Number;
+			var light:Vector3D = new Vector3D(-0.5,1,0);
 			for(var x:int = 0; x<_numCellsperCol; x++)
 			{
 				for(var z:int = 0; z<_numCellsPerRow; z++)
@@ -158,7 +165,7 @@ package com.terrain
 					}					
 					_rawVertex.push(
 						x, 
-						(_heightMap[x*_numCellsPerRow+z]*_heightScale), 
+						_heightMap[x*_numCellsPerRow+z] * _heightScale,
 						z,
 						u,
 						v
