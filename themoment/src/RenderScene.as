@@ -6,7 +6,7 @@ package
 	import com.camera.CommonCamera;
 	import com.core.Mesh;
 	import com.geomsolid.Plane;
-	import com.terrain.TerrainData;
+	import com.terrain.Terrain;
 	
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Shape;
@@ -35,11 +35,10 @@ package
 	public class RenderScene extends Sprite
 	{
 		private var _stats:Stats;
-		private var _terrainData:TerrainData;
+		private var _terrain:Terrain;
 		private var _camera:CommonCamera;
 		private var _mesh:Mesh;
 		private var _round:Mesh;
-		private var _terrain:Mesh;
 		private var _plane:Plane;
 		
 		protected var context3D:Context3D;
@@ -50,8 +49,6 @@ package
 			
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
-			
-			_terrainData = new TerrainData();
 			
 			_stats = new Stats();
 			addChild(_stats);
@@ -101,10 +98,8 @@ package
 			_mesh = new Mesh(context3D);
 			_mesh.upload(rawVertex, rawIndices);
 			
-			_terrain = new Mesh(context3D);
-			_terrain.upload(_terrainData.vertices, _terrainData.indices);
-			
 			_plane = new Plane(context3D,5,5,null);
+			_terrain = new Terrain(context3D);
 			
 			_camera.init();
 		}
@@ -117,9 +112,8 @@ package
 			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, _camera.m, true);
 			
 			_mesh.render();
-			//_plane.render();
 			_terrain.render();
-			
+			_stats.update(2,0);
 			context3D.present();			
 		}
 	}

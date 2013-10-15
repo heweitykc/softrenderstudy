@@ -4,7 +4,7 @@ package com.camera
 	import flash.geom.Vector3D;
 
 	/**
-	 * 
+	 *  辅助遨游摄像头
 	 * */
 	public class DxCamera
 	{
