@@ -100,7 +100,7 @@ package com.terrain
 				//"mov oc, v0"
 				"tex ft1, v0, fs0 <2d>\n" + 
 				"mul ft0, ft1, v1\n" +
-				"mul oc, ft0, fc0.x"
+				"mul oc, ft0, fc0"
 			);
 			
 			program = context3D.createProgram();
@@ -112,7 +112,7 @@ package com.terrain
 			context3D.setVertexBufferAt(0, vertexbuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
 			context3D.setVertexBufferAt(1, vertexbuffer, 3, Context3DVertexBufferFormat.FLOAT_2);
 			context3D.setTextureAt(0,texture0);
-			context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT,0,Vector.<Number>([1/8,0,0,0]));
+			context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT,0,Vector.<Number>([1/8,1/8,1/8,1/8]));
 			context3D.setProgram(program);
 			context3D.drawTriangles(indexbuffer);
 			
