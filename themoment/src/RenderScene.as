@@ -40,6 +40,7 @@ package
 		private var _mesh:Mesh;
 		private var _round:Mesh;
 		private var _plane:Plane;
+		private var _light:Vector3D;
 		
 		protected var context3D:Context3D;
 		
@@ -100,7 +101,7 @@ package
 			
 			_plane = new Plane(context3D,5,5,null);
 			_terrain = new Terrain(context3D);
-			_terrain.light = new Vector3D(0,100,0);
+			_light =  new Vector3D(0,100,0);
 			
 			_camera.init();
 		}
@@ -111,7 +112,8 @@ package
 			
 			context3D.clear(0,0,0,1);
 			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, _camera.m, true);
-						
+			_light.x += 1;
+			_terrain.light = new Vector3D(_light.x%100,100,0);
 			_terrain.render();
 			_mesh.render();
 			_stats.update(2,0);
