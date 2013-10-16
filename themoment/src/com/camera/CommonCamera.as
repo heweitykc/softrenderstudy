@@ -115,8 +115,6 @@ package com.camera
 		{
 			operate();
 			m.identity();
-			//m.appendRotation(getTimer()/30, Vector3D.Y_AXIS);
-			//m.appendRotation(getTimer()/10, Vector3D.X_AXIS);
 			m.appendTranslation(0, 0, 12);
 			m.append(_dxcamera.viewMatrix);
 			m.append(projectionTransform);

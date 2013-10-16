@@ -100,6 +100,7 @@ package
 			
 			_plane = new Plane(context3D,5,5,null);
 			_terrain = new Terrain(context3D);
+			_terrain.light = new Vector3D(0,100,0);
 			
 			_camera.init();
 		}

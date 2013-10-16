@@ -43,6 +43,8 @@ package com.terrain
 		protected var indexbuffer:IndexBuffer3D;
 		protected var texture0:Texture;
 		
+		private var _light:Vector3D;
+		
 		private var _bmp:Bitmap;
 		
 		public function Terrain(context3d:Context3D)
@@ -60,6 +62,12 @@ package com.terrain
 			generateIndices();
 			
 			generate();
+		}
+		
+		public function set light(value:Vector3D):void
+		{			
+			_light = value;
+			_light.normalize();
 		}
 		
 		public function get vertices():Vector.<Number>
@@ -82,8 +90,8 @@ package com.terrain
 			texture0 = context3D.createTexture(_bmp.bitmapData.width, _bmp.bitmapData.height, Context3DTextureFormat.BGRA, false);
 			texture0.uploadFromBitmapData(_bmp.bitmapData);
 			
-			vertexbuffer = context3D.createVertexBuffer(_rawVertex.length / 5, 5);
-			vertexbuffer.uploadFromVector(_rawVertex, 0, _rawVertex.length / 5);				
+			vertexbuffer = context3D.createVertexBuffer(_rawVertex.length / 8, 8);
+			vertexbuffer.uploadFromVector(_rawVertex, 0, _rawVertex.length / 8);				
 			
 			indexbuffer = context3D.createIndexBuffer(_rawIndex.length);			
 			indexbuffer.uploadFromVector(_rawIndex, 0, _rawIndex.length);
@@ -92,15 +100,16 @@ package com.terrain
 			vertexShaderAssembler.assemble( Context3DProgramType.VERTEX,
 				"m44 op, va0, vc0\n" +
 				"mov v0, va1\n" +
-				"mov v1, va0.y"
+				"mov v1, va2"	//法线向量
 			);
 			
 			var fragmentShaderAssembler:AGALMiniAssembler= new AGALMiniAssembler();
 			fragmentShaderAssembler.assemble(Context3DProgramType.FRAGMENT,
-				//"mov oc, v0"
 				"tex ft1, v0, fs0 <2d>\n" + 
-				"mul ft0, ft1, v1\n" +
-				"mul oc, ft0, fc0"
+				"dp3 ft0, fc0, v1\n" +		//法线   * 灯光
+				"add ft0.x, fc1.x, ft0.x\n" +
+				"div ft2, ft0.x, fc1.y\n" +
+				"mul oc, ft1, ft2.x"
 			);
 			
 			program = context3D.createProgram();
@@ -109,10 +118,12 @@ package com.terrain
 		
 		public function render():void
 		{
-			context3D.setVertexBufferAt(0, vertexbuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
-			context3D.setVertexBufferAt(1, vertexbuffer, 3, Context3DVertexBufferFormat.FLOAT_2);
+			context3D.setVertexBufferAt(0, vertexbuffer, 0, Context3DVertexBufferFormat.FLOAT_3);	//xyz
+			context3D.setVertexBufferAt(1, vertexbuffer, 3, Context3DVertexBufferFormat.FLOAT_2);	//uv
+			context3D.setVertexBufferAt(2, vertexbuffer, 5, Context3DVertexBufferFormat.FLOAT_3);	//法线向量
 			context3D.setTextureAt(0,texture0);
-			context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT,0,Vector.<Number>([1/8,1/8,1/8,1/8]));
+			context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT,0,Vector.<Number>([_light.x,_light.y,_light.z,0]));
+			context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT,1,Vector.<Number>([1, 2, 0, 0]));
 			context3D.setProgram(program);
 			context3D.drawTriangles(indexbuffer);
 			
@@ -135,7 +146,7 @@ package com.terrain
 		private function generateVertex():void
 		{
 			var u:Number, v:Number;
-			var light:Vector3D = new Vector3D(-0.5,1,0);
+
 			for(var x:int = 0; x<_numCellsperCol; x++)
 			{
 				for(var z:int = 0; z<_numCellsPerRow; z++)
@@ -165,16 +176,42 @@ package com.terrain
 							u = 1;
 							v = 1;
 						}
-					}					
+					}
+					//x/y/z,u/v,nx,ny,nz
+					var normal:Vector3D = computeNormal(x,z);
 					_rawVertex.push(
 						x, 
 						_heightMap[x*_numCellsPerRow+z] * _heightScale,
 						z,
 						u,
-						v
+						v,
+						normal.x,
+						normal.y,
+						normal.z
 					);
 				}
 			}
+		}
+		
+		private function computeNormal(x:Number,z:Number):Vector3D
+		{
+			if(x >= (_numCellsperCol-1) || z >= (_numCellsPerRow-1))
+			{
+				return new Vector3D(1,1,1);
+			}
+			
+			var normal:Vector3D = new Vector3D();
+			var heightA:Number, heightB:Number, heightC:Number;
+			heightA = _heightMap[x*_numCellsPerRow+z];
+			heightB = _heightMap[x*_numCellsPerRow+z+1];
+			heightC = _heightMap[(x+1)*_numCellsPerRow+z];
+			
+			var u:Vector3D = new Vector3D(1, heightB - heightA,0);
+			var v:Vector3D = new Vector3D(0,heightC - heightA, -1);
+			var n:Vector3D = u.crossProduct(v);
+			n.normalize();
+			
+			return n;
 		}
 		
 		private function generateIndices() : void
