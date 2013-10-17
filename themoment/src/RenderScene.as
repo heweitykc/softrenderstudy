@@ -23,6 +23,7 @@ package
 	import flash.events.KeyboardEvent;
 	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
+	import flash.ui.Keyboard;
 	import flash.utils.getTimer;
 	
 	/**
@@ -104,9 +105,22 @@ package
 			
 			_plane = new Plane(context3D,5,5,null);
 			_terrain = new Terrain(context3D);
-			_light =  new Vector3D(0,100,0);
+			_light =  new Vector3D(0,0,0);
 			
 			_camera.init();
+			stage.addEventListener( KeyboardEvent.KEY_DOWN, keyDownEventHandler ); 
+		}
+		
+		protected function keyDownEventHandler(e:KeyboardEvent):void
+		{
+			if(e.keyCode == Keyboard.DELETE)
+				_light.x -= _increment;
+			else if(e.keyCode == Keyboard.PAGE_DOWN)
+				_light.x += _increment;
+			else if(e.keyCode == Keyboard.HOME)
+				_light.y += _increment;
+			else if(e.keyCode == Keyboard.END)
+				_light.y -= _increment;
 		}
 		
 		private var _increment:Number = 0.2;
@@ -115,9 +129,9 @@ package
 			_camera.loop();
 			
 			context3D.clear(0,0,0,1);
-			_light.x += _increment;
-			if(_light.x <=-64 || _light.x >= 64) _increment = -_increment;
-			var pos:Vector3D = new Vector3D(0, 15, _light.x);
+			/*_light.x += _increment;
+			if(_light.x <=-10 || _light.x >= 64) _increment = -_increment;*/
+			var pos:Vector3D = new Vector3D(_light.x, _light.y, 10);
 			_mesh.x = pos.x;
 			_mesh.y = pos.y;
 			_mesh.z = pos.z;

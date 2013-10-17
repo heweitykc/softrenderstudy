@@ -93,7 +93,7 @@ package com.terrain
 			vertexbuffer = context3D.createVertexBuffer(_rawVertex.length / 8, 8);
 			vertexbuffer.uploadFromVector(_rawVertex, 0, _rawVertex.length / 8);				
 			
-			indexbuffer = context3D.createIndexBuffer(_rawIndex.length);			
+			indexbuffer = context3D.createIndexBuffer(_rawIndex.length);
 			indexbuffer.uploadFromVector(_rawIndex, 0, _rawIndex.length);
 			
 			var vertexShaderAssembler:AGALMiniAssembler = new AGALMiniAssembler();
@@ -106,8 +106,8 @@ package com.terrain
 			var fragmentShaderAssembler:AGALMiniAssembler= new AGALMiniAssembler();
 			fragmentShaderAssembler.assemble(Context3DProgramType.FRAGMENT,
 				"tex ft0, v0, fs0 <2d>\n" + 
-				"dp3 ft1, fc0, v1\n" +		//法线   * 灯光
-				"mul oc, ft0, ft1.x"
+				"dp4 ft1, fc0, v1\n" +		//法线   * 灯光
+				"mul oc, ft0.rgba, ft1.x"
 			);
 			
 			program = context3D.createProgram();
@@ -194,19 +194,18 @@ package com.terrain
 		
 		private function computeNormal(x:Number,z:Number):Vector3D
 		{
-			if(x >= (_numCellsperCol-1) || z >= (_numCellsPerRow-1))
+			if(x >= (_numCellsperCol-1) || z < 1)
 			{
-				return new Vector3D(1,1,1);
+				return new Vector3D(0,1,0);
 			}
 			
-			var normal:Vector3D = new Vector3D();
 			var heightA:Number, heightB:Number, heightC:Number;
 			heightA = _heightMap[x*_numCellsPerRow+z];
-			heightB = _heightMap[x*_numCellsPerRow+z+1];
-			heightC = _heightMap[(x+1)*_numCellsPerRow+z];
+			heightB = _heightMap[(x+1)*_numCellsPerRow+z];
+			heightC = _heightMap[x*_numCellsPerRow+z-1];
 			
-			var u:Vector3D = new Vector3D(1, heightB - heightA,0);
-			var v:Vector3D = new Vector3D(0,heightC - heightA, -1);
+			var u:Vector3D = new Vector3D(1, heightB - heightA,  0);
+			var v:Vector3D = new Vector3D(0, heightC - heightA, -1);
 			var n:Vector3D = u.crossProduct(v);
 			n.normalize();
 			
@@ -215,7 +214,6 @@ package com.terrain
 		
 		private function generateIndices() : void
 		{
-			var size:uint = 6;
 			for(var x:int = 0; x<_numCellsperCol-1; x++)
 			{
 				for(var z:int = 0; z<_numCellsPerRow-1; z++)
