@@ -41,6 +41,7 @@ package
 		private var _terrain:Terrain;
 		private var _camera:CommonCamera;
 		private var _mesh:Mesh;
+		private var _mesh1:Mesh;
 		private var _round:Mesh;
 		private var _plane:Plane;
 		private var _light:Vector3D;

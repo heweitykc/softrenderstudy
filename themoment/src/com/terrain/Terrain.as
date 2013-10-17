@@ -155,12 +155,12 @@ package com.terrain
 						if(z%2 == 0)
 						{
 							u = 0;
-							v = 0;
+							v = 1;
 						}
 						else
 						{
 							u = 0;
-							v = 1;
+							v = 0;
 						}
 					}
 					else
@@ -168,12 +168,12 @@ package com.terrain
 						if(z%2 == 0)
 						{
 							u = 1;
-							v = 0;
+							v = 1;
 						}
 						else
 						{
 							u = 1;
-							v = 1;
+							v = 0;
 						}
 					}
 					//x/y/z,u/v,nx,ny,nz
@@ -184,9 +184,9 @@ package com.terrain
 						z,
 						u,
 						v,
-						normal.x,
-						normal.y,
-						normal.z
+						1,
+						1,
+						1
 					);
 				}
 			}
@@ -212,14 +212,32 @@ package com.terrain
 			return n;
 		}
 		
+		private function getIndex(x:uint, z:uint, index:int):uint
+		{
+			if(index == 0) return x*_numCellsPerRow+z;
+			else if(index == 1) return x*_numCellsPerRow+z-1;
+			else if(index == 2) return (x+1)*_numCellsPerRow+z;
+			else if(index == 3) return (x+1)*_numCellsPerRow+z-1;
+			throw new Error("未知索引");
+		}
+		
 		private function generateIndices() : void
 		{
-			for(var x:int = 0; x<_numCellsperCol-1; x++)
+			var x:uint, z:uint;
+			for(x = 0; x<_numCellsperCol-1; x++)
 			{
-				for(var z:int = 0; z<_numCellsPerRow-1; z++)
+				for(z = _numCellsPerRow-1; z > 0; z--)
 				{
-					_rawIndex.push(x*_numCellsPerRow+z,     (x+1)*_numCellsPerRow+z,  x*_numCellsPerRow+z+1);
-					_rawIndex.push((x+1)*_numCellsPerRow+z, x*_numCellsPerRow+z+1,   (x+1)*_numCellsPerRow+z+1);
+					if(z%2 == 0)
+					{
+						_rawIndex.push(getIndex(x,z,0),getIndex(x,z,1),getIndex(x,z,2));	//0,1,2
+						_rawIndex.push(getIndex(x,z,3),getIndex(x,z,1),getIndex(x,z,2));	//3,1,2
+					}
+					else
+					{
+						_rawIndex.push(getIndex(x,z,0),getIndex(x,z,1),getIndex(x,z,2));	//1,0,2
+						_rawIndex.push(getIndex(x,z,3),getIndex(x,z,1),getIndex(x,z,2));	//1,3,2
+					}
 				}
 			}
 		}
