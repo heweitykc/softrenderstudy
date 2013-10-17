@@ -31,9 +31,11 @@ package
 	 * 
 	 */
 	
-	[SWF(width=800, height=600, frameRate=60, backgroundColor=0x000000)]
+	[SWF(width=1024, height=768, frameRate=60, backgroundColor=0xFF0000)]
 	public class RenderScene extends Sprite
 	{
+		public static var ccamera:CommonCamera;
+		
 		private var _stats:Stats;
 		private var _terrain:Terrain;
 		private var _camera:CommonCamera;
@@ -64,6 +66,7 @@ package
 			
 			addEventListener(Event.ENTER_FRAME, onRender);
 			_camera = new CommonCamera(stage);
+			ccamera = _camera;
 		}
 		
 		protected function initStage3D(e:Event):void
@@ -106,14 +109,20 @@ package
 			_camera.init();
 		}
 		
+		private var _increment:Number = 0.2;
 		protected function onRender(e:Event):void
 		{
 			_camera.loop();
 			
 			context3D.clear(0,0,0,1);
-			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, _camera.m, true);
-			_light.x += 1;
-			_terrain.light = new Vector3D(_light.x%100,100,0);
+			_light.x += _increment;
+			if(_light.x <=-64 || _light.x >= 64) _increment = -_increment;
+			var pos:Vector3D = new Vector3D(0, 15, _light.x);
+			_mesh.x = pos.x;
+			_mesh.y = pos.y;
+			_mesh.z = pos.z;
+			
+			_terrain.light = pos;
 			_terrain.render();
 			_mesh.render();
 			_stats.update(2,0);

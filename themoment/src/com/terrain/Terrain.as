@@ -105,11 +105,9 @@ package com.terrain
 			
 			var fragmentShaderAssembler:AGALMiniAssembler= new AGALMiniAssembler();
 			fragmentShaderAssembler.assemble(Context3DProgramType.FRAGMENT,
-				"tex ft1, v0, fs0 <2d>\n" + 
-				"dp3 ft0, fc0, v1\n" +		//法线   * 灯光
-				"add ft0.x, fc1.x, ft0.x\n" +
-				"div ft2, ft0.x, fc1.y\n" +
-				"mul oc, ft1, ft2.x"
+				"tex ft0, v0, fs0 <2d>\n" + 
+				"dp3 ft1, fc0, v1\n" +		//法线   * 灯光
+				"mul oc, ft0, ft1.x"
 			);
 			
 			program = context3D.createProgram();
@@ -122,13 +120,14 @@ package com.terrain
 			context3D.setVertexBufferAt(1, vertexbuffer, 3, Context3DVertexBufferFormat.FLOAT_2);	//uv
 			context3D.setVertexBufferAt(2, vertexbuffer, 5, Context3DVertexBufferFormat.FLOAT_3);	//法线向量
 			context3D.setTextureAt(0,texture0);
+			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, RenderScene.ccamera.m, true);
 			context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT,0,Vector.<Number>([_light.x,_light.y,_light.z,0]));
-			context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT,1,Vector.<Number>([1, 2, 0, 0]));
 			context3D.setProgram(program);
 			context3D.drawTriangles(indexbuffer);
 			
 			context3D.setVertexBufferAt(0,null);
 			context3D.setVertexBufferAt(1,null);
+			context3D.setVertexBufferAt(2,null);
 			context3D.setTextureAt(0,null);
 		}
 		

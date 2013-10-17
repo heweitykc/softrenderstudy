@@ -8,9 +8,14 @@ package com.core
 	import flash.display3D.IndexBuffer3D;
 	import flash.display3D.Program3D;
 	import flash.display3D.VertexBuffer3D;
+	import flash.geom.Matrix3D;
 
 	public class Mesh
 	{
+		public var x:Number=0;
+		public var y:Number=0;
+		public var z:Number=0;
+		
 		protected var context3D:Context3D;
 		protected var program:Program3D;
 		protected var vertexbuffer:VertexBuffer3D;
@@ -41,6 +46,7 @@ package com.core
 			
 			var vertexShaderAssembler:AGALMiniAssembler = new AGALMiniAssembler();
 			vertexShaderAssembler.assemble( Context3DProgramType.VERTEX,
+				//"m44 vt0, vc1, vc0\n" +
 				"m44 op, va0, vc0\n" +
 				"mov v0, va1"
 			);
@@ -56,6 +62,9 @@ package com.core
 		
 		public function render():void
 		{
+			var m:Matrix3D = RenderScene.ccamera.m.clone();
+			m.prependTranslation(x,y,z);
+			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, m, true);
 			context3D.setVertexBufferAt(0, vertexbuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
 			context3D.setVertexBufferAt(1, vertexbuffer, 3, Context3DVertexBufferFormat.FLOAT_3);			
 			context3D.setProgram(program);
