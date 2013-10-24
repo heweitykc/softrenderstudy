@@ -55,7 +55,7 @@ package com.camera
 		
 		public function walk(units:Number):void
 		{
-			var vec:Vector3D;
+			var vec:Vector3D; 
 			if(_cameraType == LANDOBJECT){
 				vec = new Vector3D(_look.x,0,_look.z);
 				vec.scaleBy(units);
