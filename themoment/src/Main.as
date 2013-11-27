@@ -1,6 +1,7 @@
 ﻿package 
 {
     import flash.display.*;
+	import flash.events.MouseEvent;
     import flash.system.*;
 
 	/*
@@ -46,8 +47,15 @@
             stage.scaleMode = "noScale";
             Security.allowDomain("*");
             //addChild(new Viewer(stage.loaderInfo.parameters, root.loaderInfo.url));
+			
+			this.stage.addEventListener(MouseEvent.RIGHT_CLICK,onRightCLick );
+			
             return;
         }// end function
-
+		protected function onRightCLick(evt:MouseEvent):void
+		{
+			trace("onRightCLick");
+		}
+		
     }
 }
