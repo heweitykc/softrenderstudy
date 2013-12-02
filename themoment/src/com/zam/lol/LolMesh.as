@@ -687,7 +687,7 @@ package com.zam.lol
 
         private function readMesh(event:FileLoadEvent) : void
         {
-			trace("readMeta.");
+			trace("readMesh.");
             var i:int;
             var textureFile:String;
             var animFile:String;
@@ -706,77 +706,73 @@ package com.zam.lol
             var e:* = event;
             var data:* = e.target.data;
             data.endian = Endian.LITTLE_ENDIAN;
-            try
-            {
-                magic = data.readUnsignedInt();
-                if (magic != 604210091)
-                {
-                    
-                }
-                this._version = data.readUnsignedInt();
-                animFile = data.readUTF();
-                textureFile = data.readUTF();
-                numMeshes = data.readUnsignedInt();
-                if (numMeshes > 0)
-                {
-                    this._meshes = new Vector.<Object>(numMeshes);
-                    i;
-                    while (i < numMeshes)
-                    {
-                        
-                        name = data.readUTF().toLowerCase();
-                        vertexStart = data.readUnsignedInt();
-                        vertexCount = data.readUnsignedInt();
-                        indexStart = data.readUnsignedInt();
-                        indexCount = data.readUnsignedInt();
-                        this._meshes[i] = {name:name, vStart:vertexStart, vCount:vertexCount, iStart:indexStart, iCount:indexCount};
-                        i = (i + 1);
-                    }
-                }
-                numVerts = data.readUnsignedInt();
-                this._vertices = new Vector.<Vertex>(numVerts);
-                i;
-                while (i < numVerts)
-                {
-                    
-                    this._vertices[i] = new Vertex();
-                    this._vertices[i].read(data);
-                    i = (i + 1);
-                }
-                numIndices = data.readUnsignedInt();
-                this._indices = new Vector.<uint>(numIndices);
-                i;
-                while (i < numIndices)
-                {
-                    
-                    this._indices[i] = data.readUnsignedShort();
-                    i = (i + 1);
-                }
-                numBones = data.readUnsignedInt();
-                this.transforms = new Vector.<Matrix3D>(numBones);
-                this._bones = new Vector.<Bone>(numBones);
-                i;
-                while (i < numBones)
-                {
-                    
-                    this._bones[i] = new Bone(this, i);
-                    this._bones[i].read(data, this._version);
-                    if (this._boneLookup[this._bones[i].name] !== undefined)
-                    {
-                        this.bones[i].name = this.bones[i].name + "2";
-                    }
-                    if (this._fixedModelBones[this.model] && this._fixedModelBones[this.model][this.skinId] && this._fixedModelBones[this.model][this.skinId][this.bones[i].name])
-                    {
-                        this.bones[i].fixed = true;
-                    }
-                    this._boneLookup[this._bones[i].name] = i;
-                    this.transforms[i] = new Matrix3D();
-                    i = (i + 1);
-                }
-            }
-            catch (ex:Error)
-            {
-            }
+
+			magic = data.readUnsignedInt();
+			if (magic != 604210091)
+			{
+				
+			}
+			this._version = data.readUnsignedInt();
+			animFile = data.readUTF();
+			textureFile = data.readUTF();
+			numMeshes = data.readUnsignedInt();
+			if (numMeshes > 0)
+			{
+				this._meshes = new Vector.<Object>(numMeshes);
+				i;
+				while (i < numMeshes)
+				{
+					
+					name = data.readUTF().toLowerCase();
+					vertexStart = data.readUnsignedInt();
+					vertexCount = data.readUnsignedInt();
+					indexStart = data.readUnsignedInt();
+					indexCount = data.readUnsignedInt();
+					this._meshes[i] = {name:name, vStart:vertexStart, vCount:vertexCount, iStart:indexStart, iCount:indexCount};
+					i = (i + 1);
+				}
+			}
+			numVerts = data.readUnsignedInt();
+			this._vertices = new Vector.<Vertex>(numVerts);
+			i;
+			while (i < numVerts)
+			{
+				
+				this._vertices[i] = new Vertex();
+				this._vertices[i].read(data);
+				i = (i + 1);
+			}
+			numIndices = data.readUnsignedInt();
+			this._indices = new Vector.<uint>(numIndices);
+			i;
+			while (i < numIndices)
+			{
+				
+				this._indices[i] = data.readUnsignedShort();
+				i = (i + 1);
+			}
+			numBones = data.readUnsignedInt();
+			this.transforms = new Vector.<Matrix3D>(numBones);
+			this._bones = new Vector.<Bone>(numBones);
+			i;
+			while (i < numBones)
+			{
+				
+				this._bones[i] = new Bone(this, i);
+				this._bones[i].read(data, this._version);
+				if (this._boneLookup[this._bones[i].name] !== undefined)
+				{
+					this.bones[i].name = this.bones[i].name + "2";
+				}
+				if (this._fixedModelBones[this.model] && this._fixedModelBones[this.model][this.skinId] && this._fixedModelBones[this.model][this.skinId][this.bones[i].name])
+				{
+					this.bones[i].fixed = true;
+				}
+				this._boneLookup[this._bones[i].name] = i;
+				this.transforms[i] = new Matrix3D();
+				i = (i + 1);
+			}
+
             if (animFile && animFile.length > 0)
             {
                 loader = new ZamLoader();
@@ -816,36 +812,32 @@ package com.zam.lol
             var e:* = event;
             var data:* = e.target.data;
             data.endian = Endian.LITTLE_ENDIAN;
-            try
-            {
-                magic = data.readUnsignedInt();
-                if (magic != 604210092)
-                {
-                    
-                }
-                version = data.readUnsignedInt();
-                if (version >= 2)
-                {
-                    newData = new ByteArray();
-                    newData.endian = Endian.LITTLE_ENDIAN;
-                    data.readBytes(newData);
-                    newData.uncompress();
-                    data = newData;
-                }
-                numAnims = data.readUnsignedInt();
-                this._animations = new Vector.<Animation>(numAnims);
-                i;
-                while (i < numAnims)
-                {
-                    
-                    this._animations[i] = new Animation(this);
-                    this._animations[i].read(data);
-                    i = (i + 1);
-                }
-            }
-            catch (ex:Error)
-            {
-            }
+
+			magic = data.readUnsignedInt();
+			if (magic != 604210092)
+			{
+				
+			}
+			version = data.readUnsignedInt();
+			if (version >= 2)
+			{
+				newData = new ByteArray();
+				newData.endian = Endian.LITTLE_ENDIAN;
+				data.readBytes(newData);
+				newData.uncompress();
+				data = newData;
+			}
+			numAnims = data.readUnsignedInt();
+			this._animations = new Vector.<Animation>(numAnims);
+			i;
+			while (i < numAnims)
+			{
+				
+				this._animations[i] = new Animation(this);
+				this._animations[i].read(data);
+				i = (i + 1);
+			}
+
             this._animsLoading = false;
             
         }

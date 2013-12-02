@@ -61,24 +61,17 @@
             var event:FileLoadEvent;
             if (this._loading)
             {
-                
+                return;
             }
             var loader:* = new Loader();
             loader.contentLoaderInfo.addEventListener(Event.COMPLETE, this.onLoaded, false, 0, true);
             loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, this.onLoadProgress, false, 0, true);
             loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, this.onLoadError, false, 0, true);
-            try
-            {
-                this._loading = true;
-                loader.load(new URLRequest(this._viewer.contentPath + this.url));
-                event = new FileLoadEvent(FileLoadEvent.LOAD_START, this.url);
-                this._viewer.dispatchEvent(event);
-            }
-            catch (ex:Error)
-            {
-                _loading = false;
-            }
-            
+			this._loading = true;
+			loader.load(new URLRequest(this._viewer.contentPath + this.url));
+			trace("texture url=" + (this._viewer.contentPath + this.url));
+			event = new FileLoadEvent(FileLoadEvent.LOAD_START, this.url);
+			this._viewer.dispatchEvent(event);
         }
 
         public function refresh() : void

@@ -1,6 +1,5 @@
 ﻿package com.zam.lol
 {
-    import __AS3__.vec.*;
     import flash.geom.*;
     import flash.utils.*;
 
@@ -15,8 +14,8 @@
 
         public function Vertex()
         {
-            this.bones = this.Vector.<int>([-1, -1, -1, -1]);
-            this.weights = this.Vector.<Number>([0, 0, 0, 0]);
+            this.bones = Vector.<int>([-1, -1, -1, -1]);
+            this.weights = Vector.<Number>([0, 0, 0, 0]);
         }
 
         public function read(param1:ByteArray) : void
