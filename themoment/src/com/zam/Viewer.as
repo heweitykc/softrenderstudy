@@ -90,10 +90,10 @@
         {
             if (this._lockStatus)
             {
-                return;
+                
             }
             this._statusText = param1;
-            return;
+            
         }
 
         public function init(event:Event) : void
@@ -113,7 +113,7 @@
             this.initEvents();
             this.initExternalApi();
             this._lastFrameTime = getTimer();
-            return;
+            
         }
 
         public function initStage3D(event:Event) : void
@@ -135,12 +135,12 @@
                 this._mesh.refresh();
             }
             this._init = true;
-        }// end function
+        }
 
         public function initStage() : void
         {
 			
-        }// end function
+        }
 
         public function initEvents() : void
         {
@@ -160,19 +160,19 @@
             addEventListener(FileLoadEvent.LOAD_ERROR, this.onLoadError);
             addEventListener(FileLoadEvent.LOAD_SECURITY_ERROR, this.onLoadError);
             addEventListener(Event.ENTER_FRAME, this.onRender);
-            return;
-        }// end function
+            
+        }
 
         public function initExternalApi() : void
         {
-            return;
-        }// end function
+            
+        }
 
         private function onRender(event:Event) : void
         {
             if (!this._context)
             {
-                return;
+                
             }
             this._thisFrameTime = getTimer();
             this._delta = (this._thisFrameTime - this._lastFrameTime) / 1000;
@@ -228,7 +228,7 @@
             }
             this._context.present();
             this._lastFrameTime = this._thisFrameTime;
-        }// end function
+        }
 
         private function onMouseDown(event:MouseEvent) : void
         {
@@ -240,16 +240,16 @@
             {
                 this._mouseDown = true;
             }
-            return;
-        }// end function
+            
+        }
 
         private function onMouseUp(event:MouseEvent) : void
         {
             var _loc_2:* = false;
             this._mouseControlDown = false;
             this._mouseDown = _loc_2;
-            return;
-        }// end function
+            
+        }
 
         private function onMouseMove(event:MouseEvent) : void
         {
@@ -260,14 +260,14 @@
             }
             this._mouseCurrX = event.stageX;
             this._mouseCurrY = event.stageY;
-            return;
-        }// end function
+            
+        }
 
         private function onMouseWheel(event:MouseEvent) : void
         {
             this._camera.translate(event.delta > 0 ? (1) : (-1), 0, 0);
-            return;
-        }// end function
+            
+        }
 
         private function onKeyDown(event:KeyboardEvent) : void
         {
@@ -295,8 +295,8 @@
             {
                 this._camera.translate(-1, 0, 0);
             }
-            return;
-        }// end function
+            
+        }
 
         private function onKeyUp(event:KeyboardEvent) : void
         {
@@ -316,14 +316,14 @@
             {
                 this._turnY = 0;
             }
-            return;
-        }// end function
+            
+        }
 
         private function onResize(event:Event) : void
         {
             stage.stage3Ds[0].requestContext3D();
-            return;
-        }// end function
+            
+        }
 
         private function onFullscreen(event:FullScreenEvent) : void
         {
@@ -335,8 +335,8 @@
             {
                 this._fullscreen = false;
             }
-            return;
-        }// end function
+            
+        }
 
         private function onFullscreenClick(event:MouseEvent) : void
         {
@@ -348,40 +348,40 @@
             {
                 stage.displayState = StageDisplayState.FULL_SCREEN;
             }
-            return;
+            
         }
 
         private function onLoadStart(event:FileLoadEvent) : void
         {
             this._loadingFiles[event.url] = [event.currentBytes, event.totalBytes];
             this.updateLoadingStatus();
-            return;
+            
         }
 
         private function onLoadComplete(event:FileLoadEvent) : void
         {
             delete this._loadingFiles[event.url];
             this.updateLoadingStatus();
-            return;
+            
         }
 
         private function onLoadProgress(event:FileLoadEvent) : void
         {
             this._loadingFiles[event.url] = [event.currentBytes, event.totalBytes];
             this.updateLoadingStatus();
-            return;
+            
         }
 
         private function onLoadError(event:FileLoadEvent) : void
         {
             this._lockStatus = true;
-            return;
+            
         }
 
         private function updateLoadingStatus() : void
         {
-            return;
-        }// end function
+            
+        }
 
     }
 }
