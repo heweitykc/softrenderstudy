@@ -139,7 +139,7 @@
 
         public function initStage() : void
         {
-			
+			this._camera = new Camera(this);
         }
 
         public function initEvents() : void

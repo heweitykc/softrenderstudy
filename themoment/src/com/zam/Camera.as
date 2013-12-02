@@ -48,7 +48,7 @@
             this._modelMatrix = new Matrix3D();
             this._viewMatrix = new Matrix3D();
             this._projMatrix = new PerspectiveMatrix3D();
-            this._cameraPos = this.Vector.<Number>([0, 0, 5, 1]);
+            this._cameraPos = Vector.<Number>([0, 0, 5, 1]);
             this.tmpVec = new Vector3D();
             this.tmpMat = new Matrix3D();
             if (param1.type == Viewer.VIEWER_WOW)
