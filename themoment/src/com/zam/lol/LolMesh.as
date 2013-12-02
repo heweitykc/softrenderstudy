@@ -420,15 +420,6 @@ package com.zam.lol
                     _loc_4 = 0;
                     while (_loc_4 < _loc_16)
                     {
-                        
-                        if (this._metaData != null)
-                        {
-                            _loc_19 = this._metaData.meshVis[this._meshes[_loc_4].name];
-                            if (!_loc_19)
-                            {
-                                ;
-                            }
-                        }
                         _loc_17 = this._meshes[_loc_4].iStart;
                         _loc_18 = this._meshes[_loc_4].iCount;
                         _loc_5 = 0;
@@ -719,7 +710,7 @@ package com.zam.lol
 			if (numMeshes > 0)
 			{
 				this._meshes = new Vector.<Object>(numMeshes);
-				i;
+				i=0;
 				while (i < numMeshes)
 				{
 					
@@ -734,7 +725,7 @@ package com.zam.lol
 			}
 			numVerts = data.readUnsignedInt();
 			this._vertices = new Vector.<Vertex>(numVerts);
-			i;
+			i=0;
 			while (i < numVerts)
 			{
 				
@@ -744,7 +735,7 @@ package com.zam.lol
 			}
 			numIndices = data.readUnsignedInt();
 			this._indices = new Vector.<uint>(numIndices);
-			i;
+			i=0;
 			while (i < numIndices)
 			{
 				
@@ -754,7 +745,7 @@ package com.zam.lol
 			numBones = data.readUnsignedInt();
 			this.transforms = new Vector.<Matrix3D>(numBones);
 			this._bones = new Vector.<Bone>(numBones);
-			i;
+			i=0;
 			while (i < numBones)
 			{
 				
@@ -782,15 +773,8 @@ package com.zam.lol
                 loader.addEventListener(FileLoadEvent.LOAD_SECURITY_ERROR, this.onLoadError, false, 0, true);
                 loader.addEventListener(FileLoadEvent.LOAD_PROGRESS, this.onLoadProgress, false, 0, true);
                 url = "models/" + animFile + ".lanim";
-                try
-                {
-                    loader.load(new URLRequest(_contentPath + url.toLowerCase()));
-                    this._animsLoading = true;
-                }
-                catch (ex:Error)
-                {
-                    _animsLoading = false;
-                }
+				loader.load(new URLRequest(_contentPath + url.toLowerCase()));
+				this._animsLoading = true;
             }
             if (textureFile && textureFile.length > 0)
             {
@@ -881,15 +865,6 @@ package com.zam.lol
                 _loc_2 = 0;
                 while (_loc_2 < _loc_4)
                 {
-                    
-                    if (this._metaData != null)
-                    {
-                        _loc_7 = this._metaData.meshVis[this._meshes[_loc_2].name];
-                        if (!_loc_7)
-                        {
-                            ;
-                        }
-                    }
                     _loc_5 = this._meshes[_loc_2].iStart;
                     _loc_6 = this._meshes[_loc_2].iCount;
                     _loc_3 = 0;
