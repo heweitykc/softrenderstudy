@@ -64,7 +64,14 @@ package com.zam.lol
         {
             this._checks = {};
             this._debugLookup = {};
-            this._fixedModelBones = {43:{0:{r_thumb1:1, r_hand:1}, 1:{r_thumb1:1, r_hand:1, r_fan1:1, r_fan3:1}, 2:{r_thumb1:1, r_thumb2:1, r_index1:1, r_hand:1, r_fan:1, r_fan2:1, l_fan:1, l_fan2:1, l_fan3:1, l_fan4:1, r_foot:1}, 3:{r_thumb1:1, r_hand:1}}};
+            this._fixedModelBones = {
+				43: { 
+					0: { r_thumb1:1, r_hand:1 },
+					1: { r_thumb1:1, r_hand:1, r_fan1:1, r_fan3:1 },
+					2: { r_thumb1:1, r_thumb2:1, r_index1:1, r_hand:1, r_fan:1, r_fan2:1, l_fan:1, l_fan2:1, l_fan3:1, l_fan4:1, r_foot:1 },
+					3: { r_thumb1:1, r_hand:1 }
+				}
+			};
             super(param1, param2, param3);
             var _loc_4:* = new Vector3D(5, 5, -5);
             _loc_4.normalize();
@@ -193,6 +200,7 @@ package com.zam.lol
             catch (ex:Error)
             {
             }
+			
             var loader:* = new ZamLoader();
             loader.dataFormat = URLLoaderDataFormat.BINARY;
             loader.addEventListener(FileLoadEvent.LOAD_COMPLETE, this.readMesh, false, 0, true);
@@ -664,6 +672,7 @@ package com.zam.lol
 
         private function readMeta(event:FileLoadEvent) : void
         {
+			trace("readMeta." + (event.target.data));
             var _loc_2:* = null;
             this._metaData = JSON.parse(event.target.data);
             if (this._animations)
@@ -674,11 +683,11 @@ package com.zam.lol
             {
                 //this._meshTextures[_loc_2] = new LolTexture(viewer, this.model + "/" + _loc_4[_loc_2] + ".png");
             }
-            
         }
 
         private function readMesh(event:FileLoadEvent) : void
         {
+			trace("readMeta.");
             var i:int;
             var textureFile:String;
             var animFile:String;

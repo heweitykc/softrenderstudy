@@ -25,6 +25,7 @@
 
         override public function load(param1:URLRequest) : void
         {
+			trace("load url=" + param1.url);
             this._request = param1;
             super.load(param1);
             var _loc_2:* = new FileLoadEvent(FileLoadEvent.LOAD_START, param1.url);

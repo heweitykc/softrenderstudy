@@ -19,7 +19,7 @@
 				model:103,
 				modelType:0,
 				viewerType:3,
-				contentPath:"http://static.wowhead.com/modelviewer/"
+				contentPath:"http://lkstatic.zamimg.com/shared/mv/"
 			};
             addChild(new Viewer(parameters));
 			
