@@ -292,7 +292,7 @@ package com.zam.lol
             var _loc_19:* = false;
             if (!this._ready || !this._animations || this._animations.length == 0)
             {
-                
+                return;
             }
             if (this._currentAnimation == -1)
             {
@@ -480,7 +480,7 @@ package com.zam.lol
             var _loc_6:* = false;
             if (!this._ready)
             {
-                
+                return;
             }
             this.mvpMatrix.copyFrom(camera.matrix);
             this.mvpMatrix.prependTranslation(this.offset.x, this.offset.y, this.offset.z);
