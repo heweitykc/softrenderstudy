@@ -16,10 +16,10 @@
             Security.allowDomain("*");
 			
 			var parameters:Object = { 
-				model:103,
+				model:15,
 				modelType:0,
 				viewerType:3,
-				contentPath:"http://lkstatic.zamimg.com/shared/mv/"
+				contentPath:"assets/"
 			};
             addChild(new Viewer(parameters));
 			
