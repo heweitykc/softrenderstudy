@@ -13,12 +13,12 @@
         {
             stage.align = "TL";
             stage.scaleMode = "noScale";
+			stage.frameRate = 60;
             Security.allowDomain("*");
 			
 			var parameters:Object = { 
 				model:15,
 				modelType:0,
-				viewerType:3,
 				contentPath:"assets/"
 			};
             addChild(new Viewer(parameters));

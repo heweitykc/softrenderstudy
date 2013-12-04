@@ -51,26 +51,7 @@
             this._cameraPos = Vector.<Number>([0, 0, 5, 1]);
             this.tmpVec = new Vector3D();
             this.tmpMat = new Matrix3D();
-            if (param1.type == Viewer.VIEWER_WOW)
-            {
-                this.setClipDistance(500);
-            }
-            else if (param1.type == Viewer.VIEWER_TOR)
-            {
-                this.setClipDistance(500);
-            }
-            else if (param1.type == Viewer.VIEWER_LOL)
-            {
-                this.setClipDistance(1000);
-            }
-            else if (param1.type == Viewer.VIEWER_GW2)
-            {
-                this.setClipDistance(10000);
-            }
-            else if (param1.type == Viewer.VIEWER_WILDSTAR)
-            {
-                this.setClipDistance(500);
-            }
+            this.setClipDistance(1000);
             return;
         }// end function
 
@@ -181,36 +162,33 @@
             {
                 _loc_5 = param1 > 0 ? (this.distance * 0.1) : (this.distance * 0.15);
                 this._distance = this._distance + _loc_5 * (-param1);
-                var _loc_6:* = true;
                 this._dirtyUp = true;
-                this._dirtyRight = _loc_6;
-                this._dirtyModelMatrix = _loc_6;
-                this._dirtyPosition = _loc_6;
-                this._dirtyViewMatrix = _loc_6;
+                this._dirtyRight = true;
+                this._dirtyModelMatrix = true;
+                this._dirtyPosition = true;
+                this._dirtyViewMatrix = true;
             }
             if (param2 != 0)
             {
                 VectorUtil.scaleBy(this._up, param2 * _loc_4, this.tmpVec);
                 this._position.incrementBy(this.tmpVec);
                 this._center.incrementBy(this.tmpVec);
-                var _loc_6:* = true;
                 this._dirtyUp = true;
-                this._dirtyRight = _loc_6;
-                this._dirtyModelMatrix = _loc_6;
-                this._dirtyPosition = _loc_6;
-                this._dirtyViewMatrix = _loc_6;
+                this._dirtyRight = true;
+                this._dirtyModelMatrix = true;
+                this._dirtyPosition = true;
+                this._dirtyViewMatrix = true;
             }
             if (param3 != 0)
             {
                 VectorUtil.scaleBy(this.right, (-param3) * _loc_4, this.tmpVec);
                 this._position.incrementBy(this.tmpVec);
                 this._center.incrementBy(this.tmpVec);
-                var _loc_6:* = true;
                 this._dirtyUp = true;
-                this._dirtyRight = _loc_6;
-                this._dirtyModelMatrix = _loc_6;
-                this._dirtyPosition = _loc_6;
-                this._dirtyViewMatrix = _loc_6;
+                this._dirtyRight = true;
+                this._dirtyModelMatrix = true;
+                this._dirtyPosition = true;
+                this._dirtyViewMatrix = true;
             }
             return;
         }// end function
@@ -246,12 +224,11 @@
                 {
                     this._yAngle = -this._piOver2 + 0.01;
                 }
-                var _loc_3:* = true;
                 this._dirtyUp = true;
-                this._dirtyRight = _loc_3;
-                this._dirtyModelMatrix = _loc_3;
-                this._dirtyPosition = _loc_3;
-                this._dirtyViewMatrix = _loc_3;
+                this._dirtyRight = true;
+                this._dirtyModelMatrix = true;
+                this._dirtyPosition = true;
+                this._dirtyViewMatrix = true;
             }
             return;
         }// end function
@@ -271,25 +248,8 @@
         public function setClipDistance(param1:Number) : void
         {
             var _loc_2:* = this._viewer.stage.stageWidth / this._viewer.stage.stageHeight;
-            this._zNear = 0.1;
-            this._zFar = param1;
-            if (this._viewer.type == Viewer.VIEWER_TOR)
-            {
-                this._zNear = 0.01;
-            }
-            else if (this._viewer.type == Viewer.VIEWER_LOL)
-            {
-                this._zNear = 1;
-                this._zFar = 5000;
-            }
-            else if (this._viewer.type == Viewer.VIEWER_GW2)
-            {
-                this._zNear = this._zFar / 2000;
-            }
-            else if (this._viewer.type == Viewer.VIEWER_WILDSTAR)
-            {
-                this._zNear = 0.01;
-            }
+			this._zNear = 1;
+			this._zFar = 5000;
             var _loc_3:* = 45 * (Math.PI / 180);
             this._projMatrix.perspectiveFieldOfViewLH(_loc_3, _loc_2, this._zNear, this._zFar);
             return;

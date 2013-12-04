@@ -18,7 +18,6 @@
     public class Viewer extends Sprite
     {
         private var _context:Context3D;
-        private var _viewerType:int;
         private var _contentPath:String;
         private var _modelType:int;
         private var _model:String;
@@ -43,18 +42,11 @@
         private var _init:Boolean;
         private var _loadingFiles:Object;
 		private var _fullscreen:Boolean = false;
-		
-        public static const VIEWER_TOR:int = 1;
-        public static const VIEWER_WOW:int = 2;
-        public static const VIEWER_LOL:int = 3;
-        public static const VIEWER_GW2:int = 4;
-        public static const VIEWER_WILDSTAR:int = 5;
 
         public function Viewer(params:Object = null)
         {
             this._params = params;
             this._loadingFiles = new Object();
-            this._viewerType = parseInt(params.viewerType) || VIEWER_WOW;
             this._contentPath = params.contentPath || "http://static.wowhead.com/modelviewer/";
             this._modelType = parseInt(params.modelType);
             this._model = params.model;
@@ -79,11 +71,6 @@
         public function get time() : int
         {
             return this._thisFrameTime;
-        }
-
-        public function get type() : int
-        {
-            return this._viewerType;
         }
 
         public function set statusText(param1:String) : void
@@ -179,10 +166,6 @@
             if (this._params.cutout)
             {
                 this._context.clear(1, 0, 1);
-            }
-            else if (this._viewerType == VIEWER_GW2)
-            {
-                this._context.clear(0.055, 0.047, 0.039, 1);
             }
             else
             {
