@@ -207,7 +207,7 @@ package com.zam.lol
             loader.addEventListener(FileLoadEvent.LOAD_ERROR, this.onLoadError, false, 0, true);
             loader.addEventListener(FileLoadEvent.LOAD_SECURITY_ERROR, this.onLoadError, false, 0, true);
             loader.addEventListener(FileLoadEvent.LOAD_PROGRESS, this.onLoadProgress, false, 0, true);
-            var url:* = "models/" + this.model + "_" + this.skinId + ".lmesh";
+            var url:* = "models/" + this.model + "_" + this.skinId + ".png";
             try
             {
                 loader.load(new URLRequest(_contentPath + url.toLowerCase()));
@@ -772,7 +772,7 @@ package com.zam.lol
                 loader.addEventListener(FileLoadEvent.LOAD_ERROR, this.onLoadError, false, 0, true);
                 loader.addEventListener(FileLoadEvent.LOAD_SECURITY_ERROR, this.onLoadError, false, 0, true);
                 loader.addEventListener(FileLoadEvent.LOAD_PROGRESS, this.onLoadProgress, false, 0, true);
-                url = "models/" + animFile + ".lanim";
+                url = "models/" + animFile + ".jpg";
 				loader.load(new URLRequest(_contentPath + url.toLowerCase()));
 				this._animsLoading = true;
             }

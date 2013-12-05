@@ -141,6 +141,7 @@
             stage.addEventListener(KeyboardEvent.KEY_UP, this.onKeyUp);
             stage.addEventListener(Event.RESIZE, this.onResize);
             stage.addEventListener(FullScreenEvent.FULL_SCREEN, this.onFullscreen);
+			
             addEventListener(FileLoadEvent.LOAD_START, this.onLoadStart);
             addEventListener(FileLoadEvent.LOAD_COMPLETE, this.onLoadComplete);
             addEventListener(FileLoadEvent.LOAD_PROGRESS, this.onLoadProgress);
@@ -157,10 +158,7 @@
 
         private function onRender(event:Event) : void
         {
-            if (!this._context)
-            {
-                
-            }
+            if (!this._context) return;
             this._thisFrameTime = getTimer();
             this._delta = (this._thisFrameTime - this._lastFrameTime) / 1000;
             if (this._params.cutout)

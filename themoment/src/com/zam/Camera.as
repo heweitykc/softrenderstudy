@@ -33,9 +33,9 @@
         private var tmpMat:Matrix3D;
         private var _cameraPos:Vector.<Number>;
 
-        public function Camera(param1:Viewer)
+        public function Camera(viewer:Viewer)
         {
-            this._viewer = param1;
+            this._viewer = viewer;
             this._center = new Vector3D(0, 0, 0, 1);
             this._staticUp = new Vector3D(0, 1, 0, 0);
             this._staticRight = new Vector3D(1, 0, 0, 0);
@@ -52,18 +52,17 @@
             this.tmpVec = new Vector3D();
             this.tmpMat = new Matrix3D();
             this.setClipDistance(1000);
-            return;
-        }// end function
+        }
 
         public function get zNear() : Number
         {
             return this._zNear;
-        }// end function
+        }
 
         public function get zFar() : Number
         {
             return this._zFar;
-        }// end function
+        }
 
         public function get positionVec() : Vector.<Number>
         {
@@ -73,7 +72,7 @@
             this._cameraPos[2] = this.tmpVec.z;
             this._cameraPos[3] = this.tmpVec.w;
             return this._cameraPos;
-        }// end function
+        }
 
         public function get position() : Vector3D
         {
@@ -85,12 +84,12 @@
                 this._dirtyPosition = false;
             }
             return this._position;
-        }// end function
+        }
 
         public function get direction() : Vector3D
         {
             return this._direction;
-        }// end function
+        }
 
         public function get right() : Vector3D
         {
@@ -101,7 +100,7 @@
                 this._dirtyRight = false;
             }
             return this._right;
-        }// end function
+        }
 
         public function get up() : Vector3D
         {
@@ -112,24 +111,24 @@
                 this._dirtyUp = false;
             }
             return this._up;
-        }// end function
+        }
 
         public function get distance() : Number
         {
             return this._distance;
-        }// end function
+        }
 
         public function get matrix() : Matrix3D
         {
             this._matrix.copyFrom(this.viewMatrix);
             this._matrix.append(this._projMatrix);
             return this._matrix;
-        }// end function
+        }
 
         public function get projMatrix() : Matrix3D
         {
             return this._projMatrix;
-        }// end function
+        }
 
         public function get viewMatrix() : Matrix3D
         {
@@ -141,7 +140,7 @@
                 this._dirtyViewMatrix = false;
             }
             return this._viewMatrix;
-        }// end function
+        }
 
         public function get modelMatrix() : Matrix3D
         {
@@ -152,7 +151,7 @@
                 this._modelMatrix.appendRotation(this._yAngle * 57.295, this._staticRight);
             }
             return this._modelMatrix;
-        }// end function
+        }
 
         public function translate(param1:Number, param2:Number, param3:Number) : void
         {
@@ -190,8 +189,7 @@
                 this._dirtyPosition = true;
                 this._dirtyViewMatrix = true;
             }
-            return;
-        }// end function
+        }
 
         public function rotate(param1:Number, param2:Number) : void
         {
@@ -230,8 +228,7 @@
                 this._dirtyPosition = true;
                 this._dirtyViewMatrix = true;
             }
-            return;
-        }// end function
+        }
 
         public function setDistance(param1:Number) : void
         {
@@ -242,8 +239,7 @@
             this._dirtyModelMatrix = _loc_2;
             this._dirtyPosition = _loc_2;
             this._dirtyViewMatrix = _loc_2;
-            return;
-        }// end function
+        }
 
         public function setClipDistance(param1:Number) : void
         {
@@ -252,8 +248,6 @@
 			this._zFar = 5000;
             var _loc_3:* = 45 * (Math.PI / 180);
             this._projMatrix.perspectiveFieldOfViewLH(_loc_3, _loc_2, this._zNear, this._zFar);
-            return;
-        }// end function
-
+        }
     }
 }
