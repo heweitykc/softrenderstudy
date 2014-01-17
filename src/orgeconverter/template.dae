@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <contributor>
+      <author>Blender User</author>
+      <authoring_tool>Blender 2.66.1 r55075:55077</authoring_tool>
+    </contributor>
+    <created>2013-07-02T23:37:11</created>
+    <modified>2013-07-02T23:37:11</modified>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_cameras/>
+  <library_lights/>
+  <library_images/>
+  <library_effects>
+  </library_effects>
+  <library_materials>
+  </library_materials>
+  <library_geometries>
+  </library_geometries>
+</COLLADA>
