@@ -8,10 +8,13 @@ int main(){
 	doc.LoadFile("tree05.xml");
 	out.LoadFile("template.dae");
 	XMLElement *scene=doc.RootElement();
+	XMLElement *outscene=out.RootElement();	
 	XMLElement *surface=scene->FirstChildElement("submeshes")->FirstChildElement("submesh");
 	while (surface){
-		printf("%s\n", surface->FirstAttribute()->Name());
 		surface=surface->NextSiblingElement();
+		XMLNode *node = out.NewElement("foo");
+     	out.InsertEndChild(node);
 	}
+	out.SaveFile("tree05.dae");
 	return 0;
 }
