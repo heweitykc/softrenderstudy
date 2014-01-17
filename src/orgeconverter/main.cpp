@@ -13,7 +13,7 @@ int main(){
 	while (surface){
 		surface=surface->NextSiblingElement();
 		XMLNode *node = out.NewElement("foo");
-     	out.InsertEndChild(node);
+     	outscene->FirstChildElement("library_geometries")->InsertEndChild(node);
 	}
 	out.SaveFile("tree05.dae");
 	return 0;
