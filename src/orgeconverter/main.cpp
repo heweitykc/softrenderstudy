@@ -51,9 +51,9 @@ void formatVCount(int count, string &str)
 	}
 }
 
-int main(){	
+int main(int argc, char * argv[]){
 	//¶ÁÈ¡µÄ
-	doc.LoadFile("tree05.xml");
+	doc.LoadFile(argv[1]);
 	XMLElement *scene=doc.RootElement();
 	XMLElement *surface=scene->FirstChildElement("submeshes")->FirstChildElement("submesh");
 	
@@ -149,7 +149,10 @@ int main(){
      	surface=surface->NextSiblingElement();
      	i++;
 	}
-	out.SaveFile("tree05.dae");
+	str.clear();
+	str.append(argv[1]);
+	str.append(".dae");
+	out.SaveFile(str.c_str());
 	return 0;
 }
 

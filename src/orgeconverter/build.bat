@@ -1,2 +1,2 @@
 cl main.cpp /link tinyxml2.obj
-main.exe
+main.exe rock05.xml
