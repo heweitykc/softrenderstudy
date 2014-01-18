@@ -110,7 +110,7 @@ int main(int argc, char * argv[]){
 
 		vecnode->InsertEndChild(pinputnode);
 		
-		XMLElement *polynode = out.NewElement("polylist")->ToElement();
+		XMLElement *polynode = out.NewElement("triangles")->ToElement();
 		polynode->SetAttribute("material","Material-material");
 			XMLElement *vinputnode = out.NewElement("input")->ToElement();
 			cname("#mesh-vertices");
@@ -118,13 +118,12 @@ int main(int argc, char * argv[]){
 			XMLElement *pnode = out.NewElement("p")->ToElement();
 			count = formatIndex(surface->FirstChildElement("faces")->FirstChildElement("face"), str);
 			XMLText *ptext = out.NewText(str.c_str())->ToText();
-			XMLElement *vcountnode = out.NewElement("vcount")->ToElement();
-			formatVCount(count, str);
-			XMLText *vtext = out.NewText(str.c_str())->ToText();
+			XMLElement *uvnode = out.NewElement("input")->ToElement();
+			cname("#mesh-uv");
+			uvnode->SetAttribute("semantic","TEXCOORD"); uvnode->SetAttribute("source",str.c_str()); uvnode->SetAttribute("offset","1");
 		polynode->SetAttribute("count",count);
 		polynode->InsertEndChild(vinputnode);
-		polynode->InsertEndChild(vcountnode);
-			vcountnode->InsertEndChild(vtext);
+		polynode->InsertEndChild(uvnode);
 		polynode->InsertEndChild(pnode);
 			pnode->InsertEndChild(ptext);
 
