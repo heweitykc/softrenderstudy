@@ -25,6 +25,23 @@ int formatVert(XMLElement *vertex, string &str)
 	return count;
 }
 
+int formatUV(XMLElement *vertex, string &str)
+{
+	int count = 0;
+	str.clear();
+	char textstr[128];
+	while(vertex){
+		count++;
+		XMLElement *pos = vertex->FirstChildElement("texcoord");
+		float u = pos->FloatAttribute("u");
+		float v = pos->FloatAttribute("v");
+		sprintf(textstr, "%f %f ", u, 1.0-v);
+		vertex=vertex->NextSiblingElement();
+		str.append(textstr);
+	}
+	return count;
+}
+
 int formatIndex(XMLElement *vertex, string &str)
 {
 	int count = 0;
@@ -32,10 +49,14 @@ int formatIndex(XMLElement *vertex, string &str)
 	char textstr[128];
 	while(vertex){
 		count++;
-		int x = vertex->IntAttribute("v1");
-		int y = vertex->IntAttribute("v2");
-		int z = vertex->IntAttribute("v3");
-		sprintf(textstr, "%d %d %d ", x, y, z);
+		int v1 = vertex->IntAttribute("v1");
+		int v2 = vertex->IntAttribute("v2");
+		int v3 = vertex->IntAttribute("v3");
+		int uv1 = v1;
+		int uv2 = v2;
+		int uv3 = v3;
+		sprintf(textstr, "%d %d %d %d %d %d ", v1, uv1, v2, uv2, v3, uv3);
+		//sprintf(textstr, "%d %d %d ", v1, v2 ,v3);
 		vertex=vertex->NextSiblingElement();
 		str.append(textstr);
 	}
@@ -49,6 +70,69 @@ void formatVCount(int count, string &str)
 		str.append("3 ");
 		count-=1;
 	}
+}
+
+XMLElement* buildVSource(char *file_no, XMLElement *surface)
+{
+	int count;
+	string str;
+	XMLElement *sourcenode = out.NewElement("source")->ToElement();
+	cname("mesh-position");
+	sourcenode->SetAttribute("id",str.c_str());
+		XMLElement *floatarrnode = out.NewElement("float_array");
+		count = formatVert(surface->FirstChildElement("geometry")->FirstChildElement("vertexbuffer")->FirstChildElement("vertex"), str);
+		XMLText *xtext = out.NewText(str.c_str())->ToText();
+		cname("mesh-position-array");
+		floatarrnode->SetAttribute("id",str.c_str()); floatarrnode->SetAttribute("count",count*3);
+		XMLElement *technode = out.NewElement("technique_common")->ToElement();
+			XMLElement *accenode = out.NewElement("accessor")->ToElement();
+			cname("#mesh-position-array");
+			accenode->SetAttribute("source",str.c_str()); accenode->SetAttribute("count",count); accenode->SetAttribute("stride",3);
+				XMLElement *p1node = out.NewElement("param")->ToElement();
+				p1node->SetAttribute("name","X"); p1node->SetAttribute("type","float");
+				XMLElement *p2node = out.NewElement("param")->ToElement();
+				p2node->SetAttribute("name","Y"); p2node->SetAttribute("type","float");
+				XMLElement *p3node = out.NewElement("param")->ToElement();
+				p3node->SetAttribute("name","Z"); p3node->SetAttribute("type","float");
+
+	accenode->InsertEndChild(p1node);
+	accenode->InsertEndChild(p2node);
+	accenode->InsertEndChild(p3node);
+	technode->InsertEndChild(accenode);
+		floatarrnode->InsertEndChild(xtext);
+	sourcenode->InsertEndChild(floatarrnode);
+	sourcenode->InsertEndChild(technode);
+	return sourcenode;
+}
+
+XMLElement* buildUVSource(char *file_no, XMLElement *surface)
+{
+	int count;
+	string str;
+	XMLElement *sourcenode = out.NewElement("source")->ToElement();
+	cname("mesh-uv");
+	sourcenode->SetAttribute("id",str.c_str());
+		XMLElement *floatarrnode = out.NewElement("float_array");
+		count = formatUV(surface->FirstChildElement("geometry")->FirstChildElement("vertexbuffer")->FirstChildElement("vertex"), str);
+		XMLText *xtext = out.NewText(str.c_str())->ToText();
+		cname("mesh-uv-array");
+		floatarrnode->SetAttribute("id",str.c_str()); floatarrnode->SetAttribute("count",count*2);
+		XMLElement *technode = out.NewElement("technique_common")->ToElement();
+			XMLElement *accenode = out.NewElement("accessor")->ToElement();
+			cname("#mesh-uv-array");
+			accenode->SetAttribute("source",str.c_str()); accenode->SetAttribute("count",count); accenode->SetAttribute("stride",2);
+				XMLElement *p1node = out.NewElement("param")->ToElement();
+				p1node->SetAttribute("name","S"); p1node->SetAttribute("type","float");
+				XMLElement *p2node = out.NewElement("param")->ToElement();
+				p2node->SetAttribute("name","T"); p2node->SetAttribute("type","float");
+
+	accenode->InsertEndChild(p1node);
+	accenode->InsertEndChild(p2node);
+	technode->InsertEndChild(accenode);
+		floatarrnode->InsertEndChild(xtext);
+	sourcenode->InsertEndChild(floatarrnode);
+	sourcenode->InsertEndChild(technode);
+	return sourcenode;
 }
 
 int main(int argc, char * argv[]){
@@ -73,33 +157,11 @@ int main(int argc, char * argv[]){
 		cname("mesh");
 		XMLElement *geonode = out.NewElement("geometry")->ToElement();
 		geonode->SetAttribute("id",str.c_str()); geonode->SetAttribute("name","Cube");
-		cname("mesh-position");
+		
 		XMLElement *meshnode = out.NewElement("mesh")->ToElement();
-		XMLElement *sourcenode = out.NewElement("source")->ToElement();
-		sourcenode->SetAttribute("id",str.c_str());
-			XMLElement *floatarrnode = out.NewElement("float_array");
-			count = formatVert(surface->FirstChildElement("geometry")->FirstChildElement("vertexbuffer")->FirstChildElement("vertex"), str);
-			XMLText *xtext = out.NewText(str.c_str())->ToText();
-			cname("mesh-position-array");
-			floatarrnode->SetAttribute("id",str.c_str()); floatarrnode->SetAttribute("count",count*3);
-			XMLElement *technode = out.NewElement("technique_common")->ToElement();
-				XMLElement *accenode = out.NewElement("accessor")->ToElement();
-				cname("#mesh-position-array");
-				accenode->SetAttribute("source",str.c_str()); accenode->SetAttribute("count",count); accenode->SetAttribute("stride",3);
-					XMLElement *p1node = out.NewElement("param")->ToElement();
-					p1node->SetAttribute("name","X"); p1node->SetAttribute("type","float");
-					XMLElement *p2node = out.NewElement("param")->ToElement();
-					p2node->SetAttribute("name","Y"); p2node->SetAttribute("type","float");
-					XMLElement *p3node = out.NewElement("param")->ToElement();
-					p3node->SetAttribute("name","Z"); p3node->SetAttribute("type","float");
-
-		accenode->InsertEndChild(p1node);
-		accenode->InsertEndChild(p2node);
-		accenode->InsertEndChild(p3node);
-		technode->InsertEndChild(accenode);
-			floatarrnode->InsertEndChild(xtext);
-		sourcenode->InsertEndChild(floatarrnode);
-		sourcenode->InsertEndChild(technode);
+		
+		XMLElement *sourcenode = buildVSource(file_no,surface);
+		XMLElement *uvSourcenode = buildUVSource(file_no,surface);
 		
 		XMLElement *vecnode = out.NewElement("vertices")->ToElement();
 		cname("mesh-vertices");
@@ -120,7 +182,7 @@ int main(int argc, char * argv[]){
 			XMLText *ptext = out.NewText(str.c_str())->ToText();
 			XMLElement *uvnode = out.NewElement("input")->ToElement();
 			cname("#mesh-uv");
-			uvnode->SetAttribute("semantic","TEXCOORD"); uvnode->SetAttribute("source",str.c_str()); uvnode->SetAttribute("offset","1");
+			uvnode->SetAttribute("semantic","TEXCOORD"); uvnode->SetAttribute("source",str.c_str()); uvnode->SetAttribute("offset","1");uvnode->SetAttribute("set","0");
 		polynode->SetAttribute("count",count);
 		polynode->InsertEndChild(vinputnode);
 		polynode->InsertEndChild(uvnode);
@@ -128,6 +190,7 @@ int main(int argc, char * argv[]){
 			pnode->InsertEndChild(ptext);
 
 		meshnode->InsertEndChild(sourcenode);
+		meshnode->InsertEndChild(uvSourcenode);
 		meshnode->InsertEndChild(vecnode);
 		meshnode->InsertEndChild(polynode);
 		

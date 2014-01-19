@@ -12,7 +12,11 @@
   </asset>
   <library_cameras/>
   <library_lights/>
-  <library_images/>
+   <library_images>
+      <image id="material0-image" name="material0-image">
+         <init_from>tree.05.png</init_from>
+      </image>
+   </library_images>
   <library_effects>
       <effect id="Material-effect">
       <profile_COMMON>
