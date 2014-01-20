@@ -136,18 +136,18 @@ XMLElement* buildUVSource(char *file_no, XMLElement *surface)
 }
 
 int main(int argc, char * argv[]){
-	//¶ÁÈ¡µÄ
+	//ï¿½ï¿½È¡ï¿½ï¿½
 	doc.LoadFile(argv[1]);
 	XMLElement *scene=doc.RootElement();
 	XMLElement *surface=scene->FirstChildElement("submeshes")->FirstChildElement("submesh");
 	
-	//µ¼³öµÄ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	out.LoadFile("template.dae");
 	XMLElement *outscene=out.RootElement();	
 	XMLElement *geolib = outscene->FirstChildElement("library_geometries");
 	XMLElement *sceneNode= outscene->FirstChildElement("library_visual_scenes");
 	
-	//±éÀúÃ¿¸ösubmesh, È¡³ö¶¥µãºÍË÷Òý
+	//ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½submesh, È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	int i=0;
 	char file_no[4];
 	int count;
@@ -217,28 +217,3 @@ int main(int argc, char * argv[]){
 	out.SaveFile(str.c_str());
 	return 0;
 }
-
-/*
-<geometry id="Cube-mesh" name="Cube">
-  <mesh>
-    <source id="Cube-mesh-positions">
-      <float_array id="Cube-mesh-positions-array" count="24"></float_array>
-      <technique_common>
-        <accessor source="#Cube-mesh-positions-array" count="8" stride="3">
-          <param name="X" type="float"/>
-          <param name="Y" type="float"/>
-          <param name="Z" type="float"/>
-        </accessor>
-      </technique_common>
-    </source>
-    <vertices id="Cube-mesh-vertices">
-      <input semantic="POSITION" source="#Cube-mesh-positions"/>
-    </vertices>
-    <polylist material="Material-material" count="6">
-      <input semantic="VERTEX" source="#Cube-mesh-vertices" offset="0"/>
-      <vcount>4 4 4 4 4 4 </vcount>
-      <p>0 0 1 0 2 0 3 0 4 1 7 1 6 1 5 1 0 2 4 2 5 2 1 2 1 3 5 3 6 3 2 3 2 4 6 4 7 4 3 4 4 5 0 5 3 5 7 5</p>
-    </polylist>
-  </mesh>
-</geometry>
-*/
