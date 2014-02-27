@@ -18,7 +18,7 @@ package com.geomsolid
 		//[Embed(source="../../../assets/heightMap.jpg",mimeType = "application/octet-stream")] 
 		//private const terrainData:Class;
 		
-		[Embed(source="../../../assets/desert.jpg")] 
+		[Embed(source="../../../bin-debug/assets/desert.jpg")] 
 		private const terrainData:Class;
 		
 		private var _w:Number;

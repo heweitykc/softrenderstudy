@@ -17,10 +17,10 @@ package com.terrain
 
 	public class Terrain
 	{
-		[Embed(source="../../../assets/coastMountain64.raw",mimeType = "application/octet-stream")] 
+		[Embed(source="../../../bin-debug/assets/coastMountain64.raw",mimeType = "application/octet-stream")] 
 		private const terrainData : Class;
 		
-		[Embed(source="../../../assets/desert.jpg")] 
+		[Embed(source="../../../bin-debug/assets/desert.jpg")] 
 		private const tileData:Class;
 		
 		private var _heightMap:Vector.<uint>;

@@ -5,7 +5,9 @@ package
 	import com.adobe.utils.Stats;
 	import com.camera.CommonCamera;
 	import com.core.Mesh;
+	import com.geomsolid.BMDModel;
 	import com.geomsolid.Plane;
+	import com.parser.BmdParser;
 	import com.terrain.Terrain;
 	
 	import flash.display.DisplayObjectContainer;
@@ -59,6 +61,8 @@ package
 			addChild(_stats);
 			
 			start();
+			
+			new BMDModel();
 		}
 		
 		public function start():void
