@@ -1,32 +1,16 @@
 package
 {
-	import com.adobe.utils.AGALMiniAssembler;
-	import com.adobe.utils.PerspectiveMatrix3D;
-	import com.adobe.utils.Stats;
-	import com.camera.CommonCamera;
-	import com.core.Mesh;
-	import com.geomsolid.BMDModel;
-	import com.geomsolid.Plane;
-	import com.parser.BmdParser;
-	import com.terrain.Terrain;
+	import com.adobe.utils.*;
+	import com.camera.*;
+	import com.core.*;
+	import com.geomsolid.*;
+	import com.terrain.*;
+	import flash.display.*;
+	import flash.display3D.*;
+	import flash.events.*;
+	import flash.geom.*;
+	import flash.ui.*;
 	
-	import flash.display.DisplayObjectContainer;
-	import flash.display.Shape;
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.display3D.Context3D;
-	import flash.display3D.Context3DProgramType;
-	import flash.display3D.Context3DVertexBufferFormat;
-	import flash.display3D.IndexBuffer3D;
-	import flash.display3D.Program3D;
-	import flash.display3D.VertexBuffer3D;
-	import flash.events.Event;
-	import flash.events.KeyboardEvent;
-	import flash.geom.Matrix3D;
-	import flash.geom.Vector3D;
-	import flash.ui.Keyboard;
-	import flash.utils.getTimer;
 	
 	/**
 	 * 场景渲染 
@@ -42,11 +26,12 @@ package
 		private var _stats:Stats;
 		private var _terrain:Terrain;
 		private var _camera:CommonCamera;
-		private var _mesh:Mesh;
-		private var _mesh1:Mesh;
-		private var _round:Mesh;
+		private var _mesh:Box;
+		private var _mesh1:SubMeshBase;
+		private var _round:SubMeshBase;
 		private var _plane:Plane;
 		private var _light:Vector3D;
+		private var _model1:MuModel;
 		
 		protected var context3D:Context3D;
 		
@@ -61,8 +46,6 @@ package
 			addChild(_stats);
 			
 			start();
-			
-			new BMDModel();
 		}
 		
 		public function start():void
@@ -80,37 +63,16 @@ package
 			stage.stage3Ds[0].removeEventListener( Event.CONTEXT3D_CREATE, initStage3D);
 			
 			context3D = stage.stage3Ds[0].context3D;			
-			context3D.configureBackBuffer(800, 600, 1, true);
+			context3D.configureBackBuffer(1024, 768, 1, true);
 			
-			var rawVertex:Vector.<Number>;
-			var rawIndices:Vector.<uint>;
-			
-			rawVertex =  Vector.<Number>([
-				0.5,   0.5, 0.5,  1, 0, 1,
-				0.5,  0.5, -0.5,  0, 1, 1,
-				-0.5, 0.5, -0.5,  1, 1, 1,
-				
-				-0.5, 0.5, 0.5,  1, 0, 1,
-				0.5,  -0.5, 0.5,  0, 1, 1,
-				-0.5, -0.5, 0.5,  1, 1, 1,
-				
-				-0.5, -0.5, -0.5,  1, 0, 1,
-				0.5,  -0.5, -0.5,  0, 1, 1
-			]);
-			rawIndices = Vector.<uint>([
-				0,1,2,	0,2,3,
-				0,7,1,	0,4,7,
-				1,7,6,	1,6,2,
-				2,6,5,	2,3,5,
-				0,5,4,	0,3,5,
-				5,6,7,	4,5,7
-			]);
-			_mesh = new Mesh(context3D);
-			_mesh.upload(rawVertex, rawIndices);
+			_mesh = new Box(context3D);
 			
 			_plane = new Plane(context3D,5,5,null);
 			_terrain = new Terrain(context3D);
-			_light =  new Vector3D(0,0,0);
+			_light =  new Vector3D(0, 0, 0);
+			
+			_model1 = new MuModel(context3D);
+			_model1.load();
 			
 			_camera.init();
 			stage.addEventListener( KeyboardEvent.KEY_DOWN, keyDownEventHandler ); 
@@ -134,17 +96,16 @@ package
 			_camera.loop();
 			
 			context3D.clear(0,0,0,1);
-			/*_light.x += _increment;
-			if(_light.x <=-10 || _light.x >= 64) _increment = -_increment;*/
+
 			var pos:Vector3D = new Vector3D(_light.x, _light.y, 10);
-			_mesh.x = pos.x;
-			_mesh.y = pos.y;
-			_mesh.z = pos.z;
 			
 			_terrain.light = pos;
-			_terrain.render();
-			_mesh.render();
-			_stats.update(2,0);
+			//_terrain.render();
+			//_plane.render();
+			//_mesh.render();
+			_model1.render();
+			_stats.update(2, 0);
+			
 			context3D.present();			
 		}
 	}

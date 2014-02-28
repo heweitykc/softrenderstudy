@@ -30,16 +30,16 @@ package com.camera
 		public function CommonCamera(stage:Stage)
 		{
 			_stage = stage;
-			stage.addEventListener( KeyboardEvent.KEY_DOWN, keyDownEventHandler );   
-			stage.addEventListener( KeyboardEvent.KEY_UP, keyUpEventHandler );
-			stage.addEventListener(MouseEvent.MOUSE_DOWN,mouseDownHandler);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownEventHandler );   
+			stage.addEventListener(KeyboardEvent.KEY_UP, keyUpEventHandler );
+			stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN,mouseDownHandler);
 			_keyDown = {};
 		}
 		
 		protected function mouseDownHandler(e:MouseEvent):void
 		{
 			_stage.addEventListener(MouseEvent.MOUSE_MOVE,mouseMoveHandler);
-			_stage.addEventListener(MouseEvent.MOUSE_UP,mouseUpHandler);
+			_stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP,mouseUpHandler);
 			_p0.x = _stage.mouseX;
 			_p0.y = _stage.mouseY;
 		}
@@ -58,7 +58,7 @@ package com.camera
 		protected function mouseUpHandler(e:MouseEvent):void
 		{
 			_stage.removeEventListener(MouseEvent.MOUSE_MOVE,mouseMoveHandler);
-			_stage.removeEventListener(MouseEvent.MOUSE_UP,mouseUpHandler);
+			_stage.removeEventListener(MouseEvent.RIGHT_MOUSE_UP,mouseUpHandler);
 		}
 		
 		protected function keyDownEventHandler(e:KeyboardEvent):void
@@ -69,7 +69,7 @@ package com.camera
 		private function operate():void
 		{
 			var angle:Number = 30/180*Math.PI;
-			var units:Number = 0.1;
+			var units:Number = 0.3;
 			
 			if(_keyDown[Keyboard.W])
 				_dxcamera.walk(units);
