@@ -1,6 +1,9 @@
 package com.core
 {
 	import com.adobe.utils.AGALMiniAssembler;
+	import com.geomsolid.MuModel;
+	import flash.geom.Vector3D;
+	import flash.net.drm.AddToDeviceGroupSetting;
 	
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;
@@ -12,6 +15,8 @@ package com.core
 
 	public class SubMeshBase
 	{
+		public var bones:Array = [];
+		public var img:String;
 		public var scale:Number;
 		
 		protected var context3D:Context3D;
@@ -22,29 +27,33 @@ package com.core
 		protected var _rawVertex:Vector.<Number>;
 		protected var _rawIndices:Vector.<uint>;
 		protected var _texture:TextureBase;
+		protected var _model:MuModel;
 		
-		public function SubMeshBase(context3d:Context3D)
+		private var _frame:int = 0;
+		
+		public function SubMeshBase(context3d:Context3D, model:MuModel=null)
 		{
 			this.context3D = context3d;
+			_model = model;
 		}
 		
-		public function upload(rawVertex:Vector.<Number>, rawIndices:Vector.<uint>, imgpath:String=null):void
+		public function upload(rawVertex:Vector.<Number>, rawIndices:Vector.<uint>):void
 		{
 			_rawVertex = rawVertex;
 			_rawIndices = rawIndices;
 			generate();
 			
-			if (!imgpath) return;
+			if (!img) return;
+			
 			_texture = new TextureBase(context3D);
-			_texture.load(imgpath);
+			_texture.load(img);
+
 		}
 		
 		private function generate():void
 		{	
 			vertexbuffer = context3D.createVertexBuffer(_rawVertex.length / 5, 5);
-			vertexbuffer.uploadFromVector(_rawVertex, 0, _rawVertex.length / 5);				
-			
-			indexbuffer = context3D.createIndexBuffer(_rawIndices.length);			
+			indexbuffer = context3D.createIndexBuffer(_rawIndices.length);						
 			indexbuffer.uploadFromVector(_rawIndices, 0, _rawIndices.length);
 			
 			var vertexShaderAssembler:AGALMiniAssembler = new AGALMiniAssembler();
@@ -67,8 +76,17 @@ package com.core
 		{
 			if (!_texture.ok) return;
 			
+			if (_model.animation.isOK) {
+				if (_frame >= _model.animation.len) _frame = 0;
+				var newv:Vector.<Number> = computeNew();
+				vertexbuffer.uploadFromVector(newv, 0, newv.length / 5);
+			} else {	//上传原始点
+				vertexbuffer.uploadFromVector(_rawVertex, 0, _rawVertex.length / 5);
+			}
+			//vertexbuffer.uploadFromVector(_rawVertex, 0, _rawVertex.length / 5);
 			var m:Matrix3D = RenderScene.ccamera.m.clone();
 			m.prependScale(scale, scale, scale);
+			m.prependRotation(180, Vector3D.Y_AXIS);
 			
 			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, m, true);
 			context3D.setVertexBufferAt(0, vertexbuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
@@ -80,6 +98,17 @@ package com.core
 			context3D.setVertexBufferAt(0,null);
 			context3D.setVertexBufferAt(1, null);
 			
+			_frame++;
+			
+		}
+		
+		private function computeNew():Vector.<Number> {
+			var newVertex:Vector.<Number> = new Vector.<Number>();
+			for (var i:int = 0; i < _rawVertex.length; i += 5) {
+				var v:Vector3D = _model.animation.getNewVertex(_rawVertex[i], _rawVertex[i + 1], _rawVertex[i + 2], _frame, bones[i / 5]);
+				newVertex.push(v.x, v.y, v.z, _rawVertex[i + 3], _rawVertex[i + 4]);
+			}
+			return newVertex;
 		}
 	}
 }

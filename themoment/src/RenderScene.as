@@ -18,7 +18,7 @@ package
 	 * 
 	 */
 	
-	[SWF(width=1024, height=768, frameRate=60, backgroundColor=0xFF0000)]
+	[SWF(width=1024, height=768, frameRate=30, backgroundColor=0xFF0000)]
 	public class RenderScene extends Sprite
 	{
 		public static var ccamera:CommonCamera;
@@ -63,7 +63,7 @@ package
 			stage.stage3Ds[0].removeEventListener( Event.CONTEXT3D_CREATE, initStage3D);
 			
 			context3D = stage.stage3Ds[0].context3D;			
-			context3D.configureBackBuffer(1024, 768, 1, true);
+			context3D.configureBackBuffer(1024, 768, 16, true, true);
 			
 			_mesh = new Box(context3D);
 			

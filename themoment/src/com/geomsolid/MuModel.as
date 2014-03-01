@@ -19,19 +19,27 @@ package com.geomsolid
 		private var _ok:Boolean = false;
 		private var _meshs:Object;
 		private var _name:String;
+		protected var _animation:Animation;
 		
 		public function MuModel(context3d:Context3D)
 		{
 			_context3d = context3d;
 		}
 		
-		public function load(name:String="Monster210"):void
+		public function load(name:String="Monster32"):void
 		{
 			_name = name;
 			_loader = new URLLoader();
 			_loader.addEventListener(Event.COMPLETE, onOK);
 			_loader.load(new URLRequest("assets/"+name + "/" + name + ".smd"));
 			_loader.dataFormat = URLLoaderDataFormat.TEXT;
+						
+			_animation = new Animation();
+			_animation.load("assets/"+name + "/" + name + "_001.smd");
+		}
+		public function get animation():Animation
+		{
+			return _animation;
 		}
 		
 		private function onOK(evt:Event):void
@@ -50,10 +58,16 @@ package com.geomsolid
 				var p0:Array = _content[i+1].split(" ");
 				var p1:Array = _content[i + 2].split(" ");
 				
-				var p2:Array = _content[i+3].split(" ");
-				_meshs[key].vertex.push(Number(p0[0]), Number(p0[1]), Number(p0[2]),  Number(p0[7]), 1-Number(p0[8]));
-				_meshs[key].vertex.push(Number(p1[0]), Number(p1[1]), Number(p1[2]),  Number(p1[7]), 1-Number(p1[8]));
-				_meshs[key].vertex.push(Number(p2[0]), Number(p2[1]), Number(p2[2]),  Number(p2[7]), 1-Number(p2[8]));
+				var p2:Array = _content[i + 3].split(" ");
+
+				_meshs[key].submesh.bones.push(int(p0[0]));	//顶点对应的关节
+				_meshs[key].submesh.bones.push(int(p1[0]));	//顶点对应的关节
+				_meshs[key].submesh.bones.push(int(p2[0]));	//顶点对应的关节
+				
+				_meshs[key].vertex.push(Number(p0[1]), Number(p0[2]), Number(p0[3]),  Number(p0[7]), 1-Number(p0[8]));
+				_meshs[key].vertex.push(Number(p1[1]), Number(p1[2]), Number(p1[3]),  Number(p1[7]), 1-Number(p1[8]));
+				_meshs[key].vertex.push(Number(p2[1]), Number(p2[2]), Number(p2[3]),  Number(p2[7]), 1-Number(p2[8]));
+				
 				var idx:int = _meshs[key].index.length;
 				_meshs[key].index.push(idx, idx + 1, idx + 2);
 				index++;
@@ -61,7 +75,8 @@ package com.geomsolid
 			
 			for each(var mesh:Object in _meshs) {
 				var sub:SubMeshBase = mesh.submesh;
-				sub.upload(mesh.vertex, mesh.index, _meshs[key].img);
+				sub.upload(mesh.vertex, mesh.index);
+				trace(sub.img + ",顶点" + mesh.vertex.length/5 + ";bones=" + sub.bones.length);
 			}
 			
 			_ok = true;
@@ -76,9 +91,10 @@ package com.geomsolid
 					_meshs[key] = { };
 					_meshs[key].vertex =  new Vector.<Number>();
 					_meshs[key].index =  new Vector.<uint>();
-					_meshs[key].submesh = new SubMeshBase(_context3d);
-					_meshs[key].submesh.scale = 1;
-					_meshs[key].img = "assets/"+_name + "/" + key;
+					_meshs[key].submesh = new SubMeshBase(_context3d,this);
+					_meshs[key].submesh.scale = 0.01;
+					_meshs[key].img = "assets/" + _name + "/" + key;
+					_meshs[key].submesh.img = _meshs[key].img;
 				}
 			}
 		}

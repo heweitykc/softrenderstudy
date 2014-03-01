@@ -1,15 +1,11 @@
 package com.camera
 {
-	import com.adobe.utils.PerspectiveMatrix3D;
+	import com.adobe.utils.*;
+	import flash.display.*;
+	import flash.events.*;
+	import flash.geom.*;
+	import flash.ui.*;
 	
-	import flash.display.Stage;
-	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
-	import flash.geom.Matrix3D;
-	import flash.geom.Point;
-	import flash.geom.Vector3D;
-	import flash.ui.Keyboard;
-	import flash.utils.getTimer;
 
 	public class CommonCamera
 	{
@@ -39,7 +35,8 @@ package com.camera
 		protected function mouseDownHandler(e:MouseEvent):void
 		{
 			_stage.addEventListener(MouseEvent.MOUSE_MOVE,mouseMoveHandler);
-			_stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP,mouseUpHandler);
+			_stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, mouseUpHandler);
+			_stage.addEventListener(Event.MOUSE_LEAVE,mouseUpHandler);
 			_p0.x = _stage.mouseX;
 			_p0.y = _stage.mouseY;
 		}
@@ -55,8 +52,9 @@ package com.camera
 			_p0.y = _stage.mouseY;
 		}
 		
-		protected function mouseUpHandler(e:MouseEvent):void
+		protected function mouseUpHandler(e:*):void
 		{
+			_stage.removeEventListener(Event.MOUSE_LEAVE,mouseUpHandler);
 			_stage.removeEventListener(MouseEvent.MOUSE_MOVE,mouseMoveHandler);
 			_stage.removeEventListener(MouseEvent.RIGHT_MOUSE_UP,mouseUpHandler);
 		}
