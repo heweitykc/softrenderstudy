@@ -29,8 +29,6 @@ package com.core
 		protected var _texture:TextureBase;
 		protected var _model:MuModel;
 		
-		private var _frame:int = 0;
-		
 		public function SubMeshBase(context3d:Context3D, model:MuModel=null)
 		{
 			this.context3D = context3d;
@@ -72,21 +70,23 @@ package com.core
 			program.upload(vertexShaderAssembler.agalcode, fragmentShaderAssembler.agalcode);
 		}
 		
-		public function render():void
+		private var r:Number=0;
+		public function render(frame:int):void
 		{
 			if (!_texture.ok) return;
 			
 			if (_model.animation.isOK) {
-				if (_frame >= _model.animation.len) _frame = 0;
-				var newv:Vector.<Number> = computeNew();
+				var newv:Vector.<Number> = computeNew(frame);
 				vertexbuffer.uploadFromVector(newv, 0, newv.length / 5);
 			} else {	//上传原始点
 				vertexbuffer.uploadFromVector(_rawVertex, 0, _rawVertex.length / 5);
 			}
 			//vertexbuffer.uploadFromVector(_rawVertex, 0, _rawVertex.length / 5);
+			r += 0.01
 			var m:Matrix3D = RenderScene.ccamera.m.clone();
-			m.prependScale(scale, scale, scale);
-			m.prependRotation(180, Vector3D.Y_AXIS);
+			//m.prependScale(scale, scale, scale);
+			//m.prependRotation(180, Vector3D.Y_AXIS);
+			//m.prependRotation(r * 180 / Math.PI, Vector3D.X_AXIS);
 			
 			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, m, true);
 			context3D.setVertexBufferAt(0, vertexbuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
@@ -97,15 +97,14 @@ package com.core
 			
 			context3D.setVertexBufferAt(0,null);
 			context3D.setVertexBufferAt(1, null);
-			
-			_frame++;
-			
 		}
 		
-		private function computeNew():Vector.<Number> {
+		private function computeNew(frame:int):Vector.<Number> {
+			//trace("frame=" + frame);
 			var newVertex:Vector.<Number> = new Vector.<Number>();
 			for (var i:int = 0; i < _rawVertex.length; i += 5) {
-				var v:Vector3D = _model.animation.getNewVertex(_rawVertex[i], _rawVertex[i + 1], _rawVertex[i + 2], _frame, bones[i / 5]);
+				if (!bones[i / 5]) throw new Error("找不到node");
+				var v:Vector3D = _model.animation.getNewVertex(_rawVertex[i], _rawVertex[i + 1], _rawVertex[i + 2], frame, bones[i / 5]);
 				newVertex.push(v.x, v.y, v.z, _rawVertex[i + 3], _rawVertex[i + 4]);
 			}
 			return newVertex;

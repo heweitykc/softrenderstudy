@@ -4,6 +4,8 @@ package com.geomsolid
 	import com.core.*;
 	import flash.display3D.Context3D;
 	import flash.events.*;
+	import flash.geom.Matrix3D;
+	import flash.geom.Vector3D;
 	import flash.net.*;
 	import flash.utils.ByteArray;
 	
@@ -24,9 +26,10 @@ package com.geomsolid
 		public function MuModel(context3d:Context3D)
 		{
 			_context3d = context3d;
+			test();
 		}
 		
-		public function load(name:String="Monster32"):void
+		public function load(name:String="Monster33"):void
 		{
 			_name = name;
 			_loader = new URLLoader();
@@ -92,19 +95,33 @@ package com.geomsolid
 					_meshs[key].vertex =  new Vector.<Number>();
 					_meshs[key].index =  new Vector.<uint>();
 					_meshs[key].submesh = new SubMeshBase(_context3d,this);
-					_meshs[key].submesh.scale = 0.01;
+					_meshs[key].submesh.scale = 1;
 					_meshs[key].img = "assets/" + _name + "/" + key;
 					_meshs[key].submesh.img = _meshs[key].img;
 				}
 			}
 		}
 		
+		private var _frame:int=0;
 		public function render():void
 		{
 			if (!_ok) return;
 			for each(var mesh:Object in _meshs) {
-				mesh.submesh.render();
+				mesh.submesh.render(_frame);
 			}
+			_frame++;
+			//trace("---------------");
+		}
+		
+		public function test():void
+		{
+			var v:Vector3D = new Vector3D();
+			var m:Matrix3D = new Matrix3D();
+			m.position = new Vector3D(100, 100, 100);
+			//m.appendTranslation(100, 100, 100);
+			m.appendRotation(90, Vector3D.X_AXIS);
+			v.incrementBy(m.position);
+			trace(v.x+","+v.y+","+v.z);
 		}
 	}
 

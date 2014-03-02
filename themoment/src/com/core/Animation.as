@@ -1,10 +1,9 @@
 package com.core 
 {
-	import adobe.utils.CustomActions;
-	import com.adobe.utils.AGALMiniAssembler;
 	import flash.events.*;
 	import flash.geom.*;
 	import flash.net.*;
+	import com.misc.MathUtil;
 		
 	/**
 	 * ...
@@ -19,11 +18,10 @@ package com.core
 		
 		private var _nodeTree:Array;
 		private var _frames:Array;
-		private var _loader:URLLoader
+		private var _loader:URLLoader;
 		
 		public function Animation() 
 		{
-			
 		}
 		
 		public function load(path:String):void
@@ -69,77 +67,41 @@ package com.core
 			_frames = [];
 			var nodeLen:int = _nodes.length + 1;
 			var animatelen:int = _animates.length / (_nodes.length + 1);
+			
 			for (i = 0; i < animatelen; i++) {
 				var frame:Array = [];
 				for (var j:int = 1; j < nodeLen; j++) {
 					var framearr:Array = _animates[i * nodeLen + j].split(" ");
 					nodeid = int(framearr[0]);
-					var transformM:Matrix3D = new Matrix3D();
-					//transformM.appendTranslation(Number(framearr[1]), Number(framearr[2]), Number(framearr[3]));
-					//rotationM(Number(framearr[4]), Number(framearr[5]), Number(framearr[6]), transformM);
+					var m:Matrix3D = new Matrix3D();			
+					m.appendRotation(Number(framearr[4]) * 180 / Math.PI, Vector3D.X_AXIS);
+					m.appendRotation(Number(framearr[5]) * 180 / Math.PI, Vector3D.Y_AXIS);
+					m.appendRotation(Number(framearr[6]) * 180 / Math.PI, Vector3D.Z_AXIS);
+					m.appendTranslation(Number(framearr[1]), Number(framearr[2]), Number(framearr[3]));
 					
-					
-					var t:TransformX = new TransformX();
-					t.translation.setTo(Number(framearr[1]), Number(framearr[2]), Number(framearr[3]));
-					t.rotation.fromEulerAngles(Number(framearr[4]), Number(framearr[5]), Number(framearr[6]));
-					t.toMatrix3D(transformM);
-					
-					frame[nodeid] = transformM;
+					frame[nodeid] = m;
 				}
+				
 				//累积node的变换
 				var accmulate:Array = [];
 				for (var k:int = 0; k < nodeLen - 1; k++) {
-					accmulate[k] = new Matrix3D;
-					var ms:Array = [];
-					ms.push(frame[k]);
-					var parentId:int = _nodeTree[k];	//父id
-					while (parentId >= 0) {
-						ms.push(frame[parentId]);
-						parentId = _nodeTree[parentId];
-					}
-					while (ms.length > 0) {
-						accmulate[k].prepend(ms.pop());
-					}
+					accmulate[k] = frame[k];
+					var parentId:int = _nodeTree[k];	//由于节点是从小到大顺序的，父节点肯定是已经累加过的
+					if (parentId > -1)
+						accmulate[k].prepend(accmulate[parentId]);
 				}
 				_frames.push(accmulate);
 			}
 			isOK = true;
 		}
 		
-		private function rotationM(a:Number, b:Number, y:Number, transformM:Matrix3D):void
-		{
-			transformM.appendRotation(a*180/Math.PI, Vector3D.X_AXIS);
-			transformM.appendRotation(b*180/Math.PI, Vector3D.Y_AXIS);
-			transformM.appendRotation(y*180/Math.PI, Vector3D.Z_AXIS);
-		}
-		
-		/*
-		private function rotationM(a:Number, b:Number, y:Number):Matrix3D
-		{
-			var sina:Number = Math.sin(a), sinb:Number = Math.sin(b), siny:Number = Math.sin(y);
-			var cosa:Number = Math.cos(a), cosb:Number = Math.cos(b), cosy:Number = Math.cos(y);
-			
-			var m:Matrix3D = new Matrix3D(Vector.<Number>([
-				cosa*cosy-cosb*sina*siny, -cosb*cosy*sina-cosa*siny, sina*sinb, 0,
-				cosy*sina+cosa*cosb*siny, cosa*cosb*cosy-sina*siny, -cosa*sinb, 0,
-				sinb*siny, cosy*cosb, cosb, 0,
-				0, 0, 0, 1
-			]));
-			
-			var m:Matrix3D = new Matrix3D(Vector.<Number>([
-				cosa*cosy-cosb*sina*siny, sina*cosy+cosb*cosa*siny, sinb*siny, 0,
-				-cosa*siny-cosb*sina*cosy, -sina*siny+cosb*cosa*cosy, sinb*cosy, 0,
-				sinb*sina, -sinb*cosa, cosb, 0,
-				0, 0, 0, 0
-			]));
-			return m;
-		}*/
-		
 		public function getNewVertex(x:Number,y:Number,z:Number,frame:int,boneid:int):Vector3D
 		{
-			var m:Matrix3D = new Matrix3D();
-			m.append(_frames[frame][boneid]);
-			return m.position.add(new Vector3D(x,y,z));
+			frame = frame % _frames.length;
+			var startp:Vector3D = new Vector3D(x,y,z);
+			var m:Matrix3D = _frames[frame][boneid];
+			startp.incrementBy(m.position);
+			return startp;
 		}
 		
 		public function get len():int

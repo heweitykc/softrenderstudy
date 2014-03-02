@@ -26,6 +26,7 @@
 
         public function toMatrix3D(param1:Matrix3D) : void
         {
+			this.rotation
             this.rotation.toMatrix(param1, this.translation, this.scale);
             return;
         }// end function
