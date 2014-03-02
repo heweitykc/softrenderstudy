@@ -45,7 +45,6 @@ package com.core
 			
 			_texture = new TextureBase(context3D);
 			_texture.load(img);
-
 		}
 		
 		private function generate():void
@@ -84,9 +83,9 @@ package com.core
 			//vertexbuffer.uploadFromVector(_rawVertex, 0, _rawVertex.length / 5);
 			r += 0.01
 			var m:Matrix3D = RenderScene.ccamera.m.clone();
-			//m.prependScale(scale, scale, scale);
+			m.prependScale(scale, scale, scale);
 			//m.prependRotation(180, Vector3D.Y_AXIS);
-			//m.prependRotation(r * 180 / Math.PI, Vector3D.X_AXIS);
+			//m.prependRotation(r * 180 / Math.PI, Vector3D.Y_AXIS);
 			
 			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, m, true);
 			context3D.setVertexBufferAt(0, vertexbuffer, 0, Context3DVertexBufferFormat.FLOAT_3);

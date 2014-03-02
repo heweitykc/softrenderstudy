@@ -18,7 +18,7 @@ package
 	 * 
 	 */
 	
-	[SWF(width=1024, height=768, frameRate=15, backgroundColor=0xFF0000)]
+	[SWF(width=1024, height=768, frameRate=60, backgroundColor=0xFF0000)]
 	public class RenderScene extends Sprite
 	{
 		public static var ccamera:CommonCamera;

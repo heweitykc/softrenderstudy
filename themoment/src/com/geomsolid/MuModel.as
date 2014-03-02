@@ -29,7 +29,7 @@ package com.geomsolid
 			test();
 		}
 		
-		public function load(name:String="Monster33"):void
+		public function load(name:String="Monster210"):void
 		{
 			_name = name;
 			_loader = new URLLoader();
@@ -95,7 +95,7 @@ package com.geomsolid
 					_meshs[key].vertex =  new Vector.<Number>();
 					_meshs[key].index =  new Vector.<uint>();
 					_meshs[key].submesh = new SubMeshBase(_context3d,this);
-					_meshs[key].submesh.scale = 1;
+					_meshs[key].submesh.scale = 0.01;
 					_meshs[key].img = "assets/" + _name + "/" + key;
 					_meshs[key].submesh.img = _meshs[key].img;
 				}
