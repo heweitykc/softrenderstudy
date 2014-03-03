@@ -1,6 +1,6 @@
 package com.misc 
 {
-	import flash.geom.Matrix3D;
+	import flash.geom.*;
 	/**
 	 * ...
 	 * @author callee
@@ -58,6 +58,16 @@ package com.misc
 			rawData[15] = 1;
 			
 			return new Matrix3D(rawData);
+		}
+		
+		public static function rotate(x:Number,y:Number,z:Number,rx:Number,ry:Number,rz:Number):Matrix3D
+		{
+			var m:Matrix3D = new Matrix3D();			
+			m.appendTranslation(x, y, z);
+			m.appendRotation(rx * 180 / Math.PI, Vector3D.X_AXIS);
+			m.appendRotation(ry * 180 / Math.PI, Vector3D.Y_AXIS);
+			m.appendRotation(rz * 180 / Math.PI, Vector3D.Z_AXIS);
+			return m;
 		}
 	}
 

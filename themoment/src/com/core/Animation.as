@@ -77,11 +77,10 @@ package com.core
 				for (var j:int = 1; j < nodeLen; j++) {
 					var framearr:Array = _animates[i * nodeLen + j].split(" ");
 					boneid = int(framearr[0]);
-					var m:Matrix3D = new Matrix3D();
-					m.appendTranslation(Number(framearr[1]), Number(framearr[2]), Number(framearr[3]));
-					m.appendRotation(Number(framearr[4]) * 180 / Math.PI, Vector3D.X_AXIS);
-					m.appendRotation(Number(framearr[5]) * 180 / Math.PI, Vector3D.Y_AXIS);
-					m.appendRotation(Number(framearr[6]) * 180 / Math.PI, Vector3D.Z_AXIS);
+					var m:Matrix3D = MathUtil.rotate(
+						Number(framearr[1]), Number(framearr[2]), Number(framearr[3]),
+						Number(framearr[4]), Number(framearr[5]), Number(framearr[6])
+					);
 					m.append(FirstF[boneid]);
 					frame[boneid] = m;					
 				}
@@ -90,29 +89,20 @@ package com.core
 				for (boneid = 0; boneid < _nodes.length; boneid++) {
 					var parentId:int = _nodeTree[boneid];	//由于节点是从小到大顺序的，父节点肯定是已经累加过的
 					if (parentId > -1)
-						frame[boneid].prepend(frame[parentId]);
+						frame[boneid].append(frame[parentId]);
 				}
 				_frames.push(frame);
 			}
 			isOK = true;
 		}
-		
-		/*	
-		public function getNewVertex(x:Number,y:Number,z:Number,frame:int,boneid:int):Vector3D
-		{
-			frame = frame % _frames.length;
-			var startp:Vector3D = new Vector3D(x,y,z);
-			var m:Matrix3D = _frames[frame][boneid];
-			startp.incrementBy(m.position);
-			return startp;
-		}*/
 			
 		public function getNewVertex(x:Number,y:Number,z:Number,frame:int,boneid:int):Vector3D
 		{
 			frame = frame % _frames.length;
 			//frame = 0;
 			var m:Matrix3D = _frames[frame][boneid];
-			return new Vector3D(x+m.position.x, y+m.position.y, z+m.position.z);
+			//return new Vector3D(x + m.position.x, y + m.position.y, z + m.position.z);
+			return m.transformVector(new Vector3D(x + m.position.x, y + m.position.y, z + m.position.z));
 		}
 		
 		public function get len():int

@@ -8,6 +8,7 @@ package com.geomsolid
 	import flash.geom.Vector3D;
 	import flash.net.*;
 	import flash.utils.ByteArray;
+	import com.misc.*;
 	
 	/**
 	 * ...
@@ -69,11 +70,10 @@ package com.geomsolid
 			for (var j:int = 1; j < nodes.length + 1; j++) {
 				var frame:Array = [];
 				var framearr:Array = animates[j].split(" ");
-				var m:Matrix3D = new Matrix3D();			
-				m.appendTranslation(Number(framearr[1]), Number(framearr[2]), Number(framearr[3]));
-				m.appendRotation(Number(framearr[4]) * 180 / Math.PI, Vector3D.X_AXIS);
-				m.appendRotation(Number(framearr[5]) * 180 / Math.PI, Vector3D.Y_AXIS);
-				m.appendRotation(Number(framearr[6]) * 180 / Math.PI, Vector3D.Z_AXIS);
+				var m:Matrix3D = MathUtil.rotate(
+					Number(framearr[1]), Number(framearr[2]), Number(framearr[3]),
+					Number(framearr[4]), Number(framearr[5]), Number(framearr[6])
+				);
 				m.invert();
 				_firstF[int(framearr[0])] = m;
 			}
