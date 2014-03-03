@@ -87,14 +87,12 @@ package com.core
 				}
 				
 				//累积node的变换
-				var accmulate:Array = [];
-				for (var k:int = 0; k < nodeLen - 1; k++) {
-					accmulate[k] = frame[k];
-					var parentId:int = _nodeTree[k];	//由于节点是从小到大顺序的，父节点肯定是已经累加过的
+				for (boneid = 0; boneid < _nodes.length; boneid++) {
+					var parentId:int = _nodeTree[boneid];	//由于节点是从小到大顺序的，父节点肯定是已经累加过的
 					if (parentId > -1)
-						accmulate[k].prepend(accmulate[parentId]);
+						frame[boneid].prepend(frame[parentId]);
 				}
-				_frames.push(accmulate);
+				_frames.push(frame);
 			}
 			isOK = true;
 		}
@@ -114,7 +112,7 @@ package com.core
 			frame = frame % _frames.length;
 			//frame = 0;
 			var m:Matrix3D = _frames[frame][boneid];
-			return m.transformVector(new Vector3D(x,y,z));
+			return new Vector3D(x+m.position.x, y+m.position.y, z+m.position.z);
 		}
 		
 		public function get len():int
