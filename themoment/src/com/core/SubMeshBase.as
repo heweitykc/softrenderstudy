@@ -80,12 +80,12 @@ package com.core
 			} else {	//上传原始点
 				vertexbuffer.uploadFromVector(_rawVertex, 0, _rawVertex.length / 5);
 			}
-			//vertexbuffer.uploadFromVector(_rawVertex, 0, _rawVertex.length / 5);
+			
 			r += 0.01
 			var m:Matrix3D = RenderScene.ccamera.m.clone();
+			m.prependRotation(180, Vector3D.Y_AXIS);
+			m.prependRotation(-90, Vector3D.X_AXIS);
 			m.prependScale(scale, scale, scale);
-			//m.prependRotation(180, Vector3D.Y_AXIS);
-			//m.prependRotation(r * 180 / Math.PI, Vector3D.Y_AXIS);
 			
 			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, m, true);
 			context3D.setVertexBufferAt(0, vertexbuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
@@ -99,7 +99,7 @@ package com.core
 		}
 		
 		private function computeNew(frame:int):Vector.<Number> {
-			//trace("frame=" + frame);
+			trace("frame=" + frame);
 			var newVertex:Vector.<Number> = new Vector.<Number>();
 			for (var i:int = 0; i < _rawVertex.length; i += 5) {
 				if (!bones[i / 5]) throw new Error("找不到node");

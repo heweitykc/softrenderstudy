@@ -29,7 +29,7 @@ package com.geomsolid
 			test();
 		}
 		
-		public function load(name:String="Monster210"):void
+		public function load(name:String="Monster32"):void
 		{
 			_name = name;
 			_loader = new URLLoader();
@@ -45,11 +45,49 @@ package com.geomsolid
 			return _animation;
 		}
 		
+		private function parsePose():void
+		{
+			var startp:int, endp:int, nodes:Array, animates:Array;
+			startp = _content.indexOf("nodes") + 1;
+			endp = _content.indexOf("end", startp);
+			nodes = _content.slice(startp, endp);
+			
+			startp = _content.indexOf("skeleton") + 1;
+			endp = _content.indexOf("end", startp);
+			animates = _content.slice(startp, endp);
+			
+			var _nodeTree:Array = [];
+			for (var i:int = 0; i < nodes.length; i++) {
+				var arr:Array = nodes[i].split(" ");
+				var boneid:int = int(arr[0]);
+				var parentid:int = int(arr[2]);
+				_nodeTree[boneid] = parentid;
+			}
+			
+			var _firstF:Array = [];
+			
+			for (var j:int = 1; j < nodes.length + 1; j++) {
+				var frame:Array = [];
+				var framearr:Array = animates[j].split(" ");
+				var m:Matrix3D = new Matrix3D();			
+				m.appendTranslation(Number(framearr[1]), Number(framearr[2]), Number(framearr[3]));
+				m.appendRotation(Number(framearr[4]) * 180 / Math.PI, Vector3D.X_AXIS);
+				m.appendRotation(Number(framearr[5]) * 180 / Math.PI, Vector3D.Y_AXIS);
+				m.appendRotation(Number(framearr[6]) * 180 / Math.PI, Vector3D.Z_AXIS);
+				m.invert();
+				_firstF[int(framearr[0])] = m;
+			}
+			
+			_animation.FirstF = _firstF;
+		}
+		
 		private function onOK(evt:Event):void
 		{
 			_loader.removeEventListener(Event.COMPLETE, onOK);
 			var spliter:String = String.fromCharCode(13, 10);
 			_content = (_loader.data as String).split(spliter);
+			
+			parsePose();
 			
 			var startp:int = _content.indexOf("triangles") + 1;
 			var endp:int = _content.indexOf("end", startp);
@@ -95,22 +133,20 @@ package com.geomsolid
 					_meshs[key].vertex =  new Vector.<Number>();
 					_meshs[key].index =  new Vector.<uint>();
 					_meshs[key].submesh = new SubMeshBase(_context3d,this);
-					_meshs[key].submesh.scale = 0.01;
+					_meshs[key].submesh.scale = 0.02;
 					_meshs[key].img = "assets/" + _name + "/" + key;
 					_meshs[key].submesh.img = _meshs[key].img;
 				}
 			}
 		}
 		
-		private var _frame:int=0;
-		public function render():void
+		public function render(frame:int):void
 		{
 			if (!_ok) return;
 			for each(var mesh:Object in _meshs) {
-				mesh.submesh.render(_frame);
+				mesh.submesh.render(frame);
 			}
-			_frame++;
-			//trace("---------------");
+			trace("---------------");
 		}
 		
 		public function test():void

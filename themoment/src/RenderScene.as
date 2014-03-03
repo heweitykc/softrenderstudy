@@ -9,6 +9,7 @@ package
 	import flash.display3D.*;
 	import flash.events.*;
 	import flash.geom.*;
+	import flash.text.TextField;
 	import flash.ui.*;
 	
 	
@@ -32,7 +33,7 @@ package
 		private var _plane:Plane;
 		private var _light:Vector3D;
 		private var _model1:MuModel;
-		
+		private var _tf1:TextField = new TextField();
 		protected var context3D:Context3D;
 		
 		public function RenderScene()
@@ -44,6 +45,10 @@ package
 			
 			_stats = new Stats();
 			addChild(_stats);
+			
+			_tf1.textColor = 0xFFFF00;
+			addChild(_tf1);
+			_tf1.x = 200;
 			
 			start();
 		}
@@ -88,23 +93,29 @@ package
 				_light.y += _increment;
 			else if(e.keyCode == Keyboard.END)
 				_light.y -= _increment;
+			else if (e.keyCode == Keyboard.X)
+				_frame++;
 		}
 		
 		private var _increment:Number = 0.2;
+		private var _frame:int=0
 		protected function onRender(e:Event):void
 		{
+			//_frame++;
 			_camera.loop();
 			
 			context3D.clear(0,0,0,1);
 
+			if (_frame % 3 != 0) return;
 			var pos:Vector3D = new Vector3D(_light.x, _light.y, 10);
 			
 			_terrain.light = pos;
 			//_terrain.render();
 			//_plane.render();
 			//_mesh.render();
-			_model1.render();
+			_model1.render(_frame);
 			_stats.update(2, 0);
+			_tf1.text = "第"+_frame+"帧"
 			
 			context3D.present();			
 		}

@@ -52,15 +52,19 @@ package com.core
 			parse();
 		}
 		
+		//保留第一帧动画
+		
+		public var FirstF:Array ;
+		
 		private function parse():void
 		{
 			//build nodes
 			_nodeTree = [];
 			for (var i:int = 0; i < _nodes.length; i++) {
 				var arr:Array = _nodes[i].split(" ");
-				var nodeid:int = int(arr[0]);
+				var boneid:int = int(arr[0]);
 				var parentid:int = int(arr[2]);
-				_nodeTree[nodeid] = parentid;
+				_nodeTree[boneid] = parentid;
 			}
 			
 			//build animations
@@ -72,13 +76,14 @@ package com.core
 				var frame:Array = [];
 				for (var j:int = 1; j < nodeLen; j++) {
 					var framearr:Array = _animates[i * nodeLen + j].split(" ");
-					nodeid = int(framearr[0]);
-					var m:Matrix3D = new Matrix3D();			
+					boneid = int(framearr[0]);
+					var m:Matrix3D = new Matrix3D();
 					m.appendTranslation(Number(framearr[1]), Number(framearr[2]), Number(framearr[3]));
 					m.appendRotation(Number(framearr[4]) * 180 / Math.PI, Vector3D.X_AXIS);
 					m.appendRotation(Number(framearr[5]) * 180 / Math.PI, Vector3D.Y_AXIS);
 					m.appendRotation(Number(framearr[6]) * 180 / Math.PI, Vector3D.Z_AXIS);
-					frame[nodeid] = m;
+					m.append(FirstF[boneid]);
+					frame[boneid] = m;					
 				}
 				
 				//累积node的变换
@@ -87,7 +92,7 @@ package com.core
 					accmulate[k] = frame[k];
 					var parentId:int = _nodeTree[k];	//由于节点是从小到大顺序的，父节点肯定是已经累加过的
 					if (parentId > -1)
-						accmulate[k].append(accmulate[parentId]);
+						accmulate[k].prepend(accmulate[parentId]);
 				}
 				_frames.push(accmulate);
 			}
@@ -107,12 +112,9 @@ package com.core
 		public function getNewVertex(x:Number,y:Number,z:Number,frame:int,boneid:int):Vector3D
 		{
 			frame = frame % _frames.length;
-			var m:Matrix3D = new Matrix3D;
-			m.position = new Vector3D(x,y,z);
-			m.append(_frames[frame][boneid]);
-			m.appendRotation(180, Vector3D.Y_AXIS);
-			m.appendRotation(90, Vector3D.X_AXIS);
-			return m.position;
+			//frame = 0;
+			var m:Matrix3D = _frames[frame][boneid];
+			return m.transformVector(new Vector3D(x,y,z));
 		}
 		
 		public function get len():int
