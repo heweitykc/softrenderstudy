@@ -106,7 +106,7 @@ package
 			
 			context3D.clear(0,0,0,1);
 
-			if (_frame % 6 != 0) return;
+			if (_frame % 10 != 0) return;
 			var pos:Vector3D = new Vector3D(_light.x, _light.y, 10);
 			
 			_terrain.light = pos;

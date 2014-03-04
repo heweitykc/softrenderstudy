@@ -4,6 +4,7 @@ package com.geomsolid
 	import com.core.*;
 	import flash.display3D.Context3D;
 	import flash.events.*;
+	import flash.geom.Matrix;
 	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
 	import flash.net.*;
@@ -39,7 +40,7 @@ package com.geomsolid
 			_loader.dataFormat = URLLoaderDataFormat.TEXT;
 						
 			_animation = new Animation();
-			_animation.load("assets/"+name + "/" + name + "_001.smd");
+			_animation.load("assets/"+name + "/" + name + "_005.smd");
 		}
 		public function get animation():Animation
 		{
@@ -61,7 +62,7 @@ package com.geomsolid
 			for (var i:int = 0; i < nodes.length; i++) {
 				var arr:Array = nodes[i].split(" ");
 				var boneid:int = int(arr[0]);
-				var parentid:int = int(arr[2]);
+				var parentid:int = int(arr[arr.length-1]);
 				_nodeTree[boneid] = parentid;
 			}
 			animation.NodeTree = _nodeTree;
@@ -82,7 +83,7 @@ package com.geomsolid
 			for (boneid = 0; boneid < nodes.length; boneid++) {
 				var parentId:int = _nodeTree[boneid];	//由于节点是从小到大顺序的，父节点肯定是已经累加过的
 				if (parentId > -1)
-					_firstF[boneid].prepend(_firstF[parentId]);
+					_firstF[boneid].append(_firstF[parentId]);
 			}
 			
 			_animation.Pose = _firstF;
@@ -158,14 +159,15 @@ package com.geomsolid
 		
 		public function test():void
 		{
-			var v:Vector3D = new Vector3D();
+			
+			//var m:Matrix3D = MathUtil.rotate(0.000000, -6.875042, 202.009552, 0.000000, -0.008727, -1.570795);
 			var m:Matrix3D = new Matrix3D();
-			var vp = [0.000000, -6.875042, 202.009552];
-			var vr = [0.000000, -0.008727, -1.570795];
-			m.appendRotation(vr[0],Vector3D.X_AXIS);
-			m.appendRotation(vr[1],Vector3D.Y_AXIS);
-			m.appendRotation(vr[2], Vector3D.Z_AXIS);
-			//m.appendTranslation(vp[0], vp[1], vp[2]);
+			
+			m.appendRotation(0.000000,Vector3D.X_AXIS);
+			m.appendRotation(-0.008727,Vector3D.Y_AXIS);
+			m.appendRotation(-1.570795, Vector3D.Z_AXIS);
+			m.appendTranslation(0.000000,-6.875042,202.009552);
+			trace(m.rawData);
 		}
 	}
 

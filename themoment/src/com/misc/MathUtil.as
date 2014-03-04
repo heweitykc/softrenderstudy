@@ -1,5 +1,6 @@
 package com.misc 
 {
+	import adobe.utils.CustomActions;
 	import flash.geom.*;
 	/**
 	 * ...
@@ -67,6 +68,10 @@ package com.misc
 			m.appendRotation(ry * 180 / Math.PI, Vector3D.Y_AXIS);
 			m.appendRotation(rz * 180 / Math.PI, Vector3D.Z_AXIS);
 			m.appendTranslation(x, y, z);
+			/*
+			var m:Matrix3D = MathUtil.euler2Matrix([rx,ry,rz]);
+			m.appendTranslation(x, y, z);
+			*/
 			return m;
 		}
 	}

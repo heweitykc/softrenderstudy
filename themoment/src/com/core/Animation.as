@@ -83,7 +83,7 @@ package com.core
 				for (boneid = 0; boneid < _nodes.length; boneid++) {
 					var parentId:int = _nodeTree[boneid];	//由于节点是从小到大顺序的，父节点肯定是已经累加过的
 					if (parentId > -1)
-						frame[boneid].prepend(frame[parentId]);
+						frame[boneid].append(frame[parentId]);
 				}
 				_frames.push(frame);
 			}
