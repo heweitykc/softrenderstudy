@@ -64,6 +64,7 @@ package com.geomsolid
 				var parentid:int = int(arr[2]);
 				_nodeTree[boneid] = parentid;
 			}
+			animation.NodeTree = _nodeTree;
 			
 			var _firstF:Array = [];
 			
@@ -74,11 +75,17 @@ package com.geomsolid
 					Number(framearr[1]), Number(framearr[2]), Number(framearr[3]),
 					Number(framearr[4]), Number(framearr[5]), Number(framearr[6])
 				);
-				m.invert();
 				_firstF[int(framearr[0])] = m;
 			}
 			
-			_animation.FirstF = _firstF;
+			//累积node的变换
+			for (boneid = 0; boneid < nodes.length; boneid++) {
+				var parentId:int = _nodeTree[boneid];	//由于节点是从小到大顺序的，父节点肯定是已经累加过的
+				if (parentId > -1)
+					_firstF[boneid].prepend(_firstF[parentId]);
+			}
+			
+			_animation.Pose = _firstF;
 		}
 		
 		private function onOK(evt:Event):void
@@ -153,11 +160,12 @@ package com.geomsolid
 		{
 			var v:Vector3D = new Vector3D();
 			var m:Matrix3D = new Matrix3D();
-			m.position = new Vector3D(100, 100, 100);
-			//m.appendTranslation(100, 100, 100);
-			m.appendRotation(90, Vector3D.X_AXIS);
-			v.incrementBy(m.position);
-			trace(v.x+","+v.y+","+v.z);
+			var vp = [0.000000, -6.875042, 202.009552];
+			var vr = [0.000000, -0.008727, -1.570795];
+			m.appendRotation(vr[0],Vector3D.X_AXIS);
+			m.appendRotation(vr[1],Vector3D.Y_AXIS);
+			m.appendRotation(vr[2], Vector3D.Z_AXIS);
+			//m.appendTranslation(vp[0], vp[1], vp[2]);
 		}
 	}
 

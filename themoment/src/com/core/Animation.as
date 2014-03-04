@@ -54,34 +54,28 @@ package com.core
 		
 		//保留第一帧动画
 		
-		public var FirstF:Array ;
+		public var Pose:Array ;
+		public var NodeTree:Array;
 		
 		private function parse():void
 		{
 			//build nodes
-			_nodeTree = [];
-			for (var i:int = 0; i < _nodes.length; i++) {
-				var arr:Array = _nodes[i].split(" ");
-				var boneid:int = int(arr[0]);
-				var parentid:int = int(arr[2]);
-				_nodeTree[boneid] = parentid;
-			}
+			_nodeTree = NodeTree;
 			
 			//build animations
 			_frames = [];
 			var nodeLen:int = _nodes.length + 1;
 			var animatelen:int = _animates.length / (_nodes.length + 1);
 			
-			for (i = 0; i < animatelen; i++) {
+			for (var i:int = 0; i < animatelen; i++) {
 				var frame:Array = [];
 				for (var j:int = 1; j < nodeLen; j++) {
 					var framearr:Array = _animates[i * nodeLen + j].split(" ");
-					boneid = int(framearr[0]);
+					var boneid:int = int(framearr[0]);
 					var m:Matrix3D = MathUtil.rotate(
 						Number(framearr[1]), Number(framearr[2]), Number(framearr[3]),
 						Number(framearr[4]), Number(framearr[5]), Number(framearr[6])
 					);
-					m.append(FirstF[boneid]);
 					frame[boneid] = m;					
 				}
 				
@@ -89,7 +83,7 @@ package com.core
 				for (boneid = 0; boneid < _nodes.length; boneid++) {
 					var parentId:int = _nodeTree[boneid];	//由于节点是从小到大顺序的，父节点肯定是已经累加过的
 					if (parentId > -1)
-						frame[boneid].append(frame[parentId]);
+						frame[boneid].prepend(frame[parentId]);
 				}
 				_frames.push(frame);
 			}
@@ -99,10 +93,15 @@ package com.core
 		public function getNewVertex(x:Number,y:Number,z:Number,frame:int,boneid:int):Vector3D
 		{
 			frame = frame % _frames.length;
-			//frame = 0;
+			var inputv:Vector3D = new Vector3D(x, y, z);
+
 			var m:Matrix3D = _frames[frame][boneid];
-			//return new Vector3D(x + m.position.x, y + m.position.y, z + m.position.z);
-			return m.transformVector(new Vector3D(x + m.position.x, y + m.position.y, z + m.position.z));
+			var m1:Matrix3D = Pose[boneid].clone();
+			m1.invert();
+			var v1:Vector3D = m1.transformVector(inputv);
+			var v2:Vector3D = m.transformVector(v1);
+			
+			return new Vector3D(x + v2.x, y + v2.y, z + v2.z);
 		}
 		
 		public function get len():int

@@ -101,12 +101,12 @@ package
 		private var _frame:int=0
 		protected function onRender(e:Event):void
 		{
-			//_frame++;
+			_frame++;
 			_camera.loop();
 			
 			context3D.clear(0,0,0,1);
 
-			if (_frame % 3 != 0) return;
+			if (_frame % 6 != 0) return;
 			var pos:Vector3D = new Vector3D(_light.x, _light.y, 10);
 			
 			_terrain.light = pos;
